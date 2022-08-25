@@ -22,6 +22,8 @@ import DirTopPath from './menus/DirTopPath.vue'
 import message from '@/utils/message'
 import { menuOpenFile } from '@/utils/openfile'
 import UserDAL from '@/user/userdal'
+import UploadDAL from '@/down/uploaddal'
+import usePanTreeStore from '@/pan/pantreestore'
 
 const viewlist = ref()
 const inputsearch = ref()
@@ -29,6 +31,7 @@ const inputsearch = ref()
 const appStore = useAppStore()
 const winStore = useWinStore()
 const panfileStore = usePanFileStore()
+const pantreeStore = usePanTreeStore()
 
 let dirid = ''
 panfileStore.$subscribe((_m: any, state: PanFileState) => {
@@ -368,8 +371,10 @@ const onPanDrop = (e: any) => {
       const path = fileslist[i].path
       files.push(path)
     }
-    message.warning('上传' + files[0])
-    //UploadDAL.UploadLocalFiles(UserDAL.QueryUserID(), this.props.pandir.selectDir.drive_id, this.props.pandir.selectDir.file_id, files, true) 
+
+    UploadDAL.UploadLocalFiles(pantreeStore.user_id, pantreeStore.drive_id, pantreeStore.selectDir.file_id, files, true)
+    //message.warning('上传' + files[0])
+    //UploadDAL.UploadLocalFiles(UserDAL.QueryUserID(), this.props.pandir.selectDir.drive_id, this.props.pandir.selectDir.file_id, files, true)
   }
 }
 const onPanDragEnter = (ev: any) => {

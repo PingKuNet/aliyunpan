@@ -25,7 +25,7 @@
     "dayjs": "^1.11.5",
     "dexie": "^3.2.2",
     "dom-to-image": "^2.6.0",
-    "electron": "20.0.3",
+    "electron": "20.1.0",
     "electron-builder": "^23.3.3",
     "fuzzysort": "^2.0.1",
     "isomorphic-fetch": "^3.0.0",

@@ -13,6 +13,7 @@ import DirLeftMenu from './menus/DirLeftMenu.vue'
 import { TreeNodeData } from '@/store/treestore'
 import { dropMoveSelectedFile } from './topbtns/topbtn'
 import message from '@/utils/message'
+import UploadDAL from '@/down/uploaddal'
 
 const treeref = ref()
 const winStore = useWinStore()
@@ -109,7 +110,8 @@ const onRowItemDrop = (ev: any, movetodirid: string) => {
       const path = fileslist[i].path
       files.push(path)
     }
-    message.warning('上传' + files[0])
+    UploadDAL.UploadLocalFiles(pantreeStore.user_id, pantreeStore.drive_id, pantreeStore.selectDir.file_id, files, true)
+    //message.warning('上传' + files[0])
     //UploadDAL.UploadLocalFiles(UserDAL.QueryUserID(), this.props.pandir.selectDir.drive_id, this.props.pandir.selectDir.file_id, files, true) 
   } else {
     
