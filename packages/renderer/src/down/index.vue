@@ -30,7 +30,7 @@ const appStore = useAppStore()
         </a-menu-item>
         <a-menu-item key="UploadedRight">
           <template #icon><i class="iconfont iconcloud_success" /></template>
-          已上传完 x
+          已上传完
         </a-menu-item>
         <a-menu-item key="SyncRight">
           <template #icon><i class="iconfont iconcloud-sync" /></template>

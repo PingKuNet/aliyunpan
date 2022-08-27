@@ -3,18 +3,23 @@ import path from 'path'
 import { GetKeyHashNumber, humanSize } from '@/utils/format'
 import message from '@/utils/message'
 import type { IStateUploadFile } from '@/aliapi/models'
-import useUploadStore from '@/down/uploadstore'
 import useUploadingStore from '@/down/uploadingstore'
+import useUploadedStore from '@/down/uploadedstore'
 import DB from '@/utils/db'
 import useSettingStore from '@/setting/settingstore'
 import { UploadAdd, UploadCmd } from '@/down/uploadservice'
 import fsPromises from 'fs/promises'
 
-// const UploadStore = useUploadStore();
-
-export let UploadingList = new Map<string, IStateUploadFile>()
-export let UploadedList: IStateUploadFile[] = []
 export default class UploadDAL {
+
+  /**
+   * 从DB中加载数据
+   */
+  static async aLoadUploadedFromDB() {
+    const uploadedStore = useUploadedStore()
+    uploadedStore.ListDataRaw = await DB.getUploadedAll()
+    uploadedStore.mRefreshListDataShow(true)
+  }
 
   /**
    * 从DB中加载数据
@@ -25,6 +30,7 @@ export default class UploadDAL {
     uploadingStore.ListDataRaw = await DB.getUploadingAll()
     uploadingStore.mRefreshListDataShow(true)
     uploadingStore.ListLoading = false
+    this.aLoadUploadedFromDB().then(r => {})
   }
 
   /**
@@ -223,6 +229,7 @@ export default class UploadDAL {
    */
   static mSaveToUploaded(UploadID: string) {
     const uploadingStore = useUploadingStore()
+    const uploadedStore = useUploadedStore()
     const UploadingList = uploadingStore.ListDataRaw
     for (let j = 0; j < UploadingList.length; j++) {
       if (UploadingList[j].UploadID == UploadID && UploadingList[j].Upload.DownState === '已完成') {
@@ -230,8 +237,9 @@ export default class UploadDAL {
         UploadingList.splice(j, 1)
         DB.deleteUploading(item.UploadID)
         item.Upload.DownTime = Date.now()
-        item.UploadID = item.UploadID + '_' + item.Upload.DownTime.toString()
-        UploadedList.splice(0, 0, item)
+        item.UploadID = item.Upload.DownTime.toString() + '_' + item.UploadID
+        uploadedStore.ListDataRaw.splice(0, 0, item)
+        uploadedStore.mRefreshListDataShow(true)  // TODO 当上传数量较大时会不会不性能问题
         DB.saveUploaded(item.UploadID, JSON.parse(JSON.stringify(item)))
         break
       }

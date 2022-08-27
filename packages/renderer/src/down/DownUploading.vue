@@ -155,7 +155,7 @@ const handleRightClick = (e: { event: MouseEvent; node: any }) => {
               </a-button>
             </div>
             <div class="fileicon">
-              <i :class="'iconfont ' + item.icon" aria-hidden="true"></i>
+              <i :class="'iconfont ' + item.Info.icon" aria-hidden="true"></i>
             </div>
             <div class="filename">
               <div :title="item.Info.localFilePath">
@@ -232,7 +232,7 @@ body[arco-theme='dark'] .toppanarea .cell {
 
 .cell.filesize {
   font-size: 16px;
-  width: 72px;
+  width: 82px;
   text-align: right;
   flex-shrink: 0;
   flex-grow: 0;

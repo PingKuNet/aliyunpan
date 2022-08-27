@@ -1,5 +1,5 @@
 import Dexie from 'dexie'
-import { ITokenInfo } from '@/user/userstore'
+import useUserStore,{ ITokenInfo } from '@/user/userstore'
 import { IOtherShareLinkModel } from '@/share/share/OtherShareStore'
 import { IStateUploadFile } from '@/aliapi/models'
 
@@ -26,7 +26,7 @@ class XBYDB3 extends Dexie {
   constructor() {
     super('XBYDB3')
 
-    this.version(2)
+    this.version(8)
       .stores({
         iobject: '',
         istring: '',
@@ -34,11 +34,11 @@ class XBYDB3 extends Dexie {
         ibool: '',
 
         itoken: '',
-        iothershare: '',
+        iothershare: 'share_id',
         idowning: '',
         idowned: '',
-        iuploading: '',
-        iuploaded: '',
+        iuploading: 'UploadID, Info.drive_id, Info.user_id',
+        iuploaded: 'UploadID, Info.drive_id, Info.user_id, Upload.DownTime',
         ifilehash: ''
       })
       .upgrade((tx: any) => {
@@ -185,7 +185,8 @@ class XBYDB3 extends Dexie {
   }
   async getUploadingAll(): Promise<IStateUploadFile[]> {
     if (!this.isOpen()) await this.open().catch(() => {})
-    const list = await this.iuploading.toArray()
+    const userStore = useUserStore()
+    const list = await this.iuploading.where('Info.user_id').equals(userStore.userID).toArray()
     return list
   }
   async deleteUploading(key: string) {
@@ -204,16 +205,25 @@ class XBYDB3 extends Dexie {
     if (!this.isOpen()) await this.open().catch(() => {})
     return this.iuploading.clear()
   }
-
   async getUploaded(key: string): Promise<IStateUploadFile | undefined> {
     if (!this.isOpen()) await this.open().catch(() => {})
     const val = await this.iuploaded.get(key)
     if (val) return val
     else return undefined
   }
+  async getUploadedAll(): Promise<IStateUploadFile[]> {
+    if (!this.isOpen()) await this.open().catch(() => {})
+    const userStore = useUserStore()
+    const list = await this.iuploaded.where('Info.user_id').equals(userStore.userID).reverse().toArray()
+    return list
+  }
   async deleteUploaded(key: string) {
     if (!this.isOpen()) await this.open().catch(() => {})
     return this.iuploaded.delete(key)
+  }
+  async deleteUploadeds(keys: string[]) {
+    if (!this.isOpen()) await this.open().catch(() => {})
+    return this.iuploaded.bulkDelete(keys)
   }
   async saveUploaded(key: string, value: IStateUploadFile) {
     if (!this.isOpen()) await this.open().catch(() => {})

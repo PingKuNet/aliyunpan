@@ -372,6 +372,7 @@ const useUploadingStore = defineStore('uploading', {
       const uploadIDList: string[] = []
       for (let j = 0; j < UploadingList.length; j++) {
         const UploadID = UploadingList[j].UploadID
+        UploadingList[j].Upload.DownState = '待删除'
         uploadIDList.push(UploadID)
       }
       UploadingList.splice(0, UploadingList.length)
@@ -406,48 +407,6 @@ const useUploadingStore = defineStore('uploading', {
       }
       UploadingList.splice(0, UploadingList.length, ...newlist, ...lastlist);
       this.mRefreshListDataShow(true)
-    },
-
-    /**
-     * 保存到历史中，并从列表中删除
-     * @param UploadID
-     */
-    mSaveToUploaded(UploadID: string) {
-      const UploadingList = this.ListDataRaw
-      for (let j = 0; j < UploadingList.length; j++) {
-        if (UploadingList[j].UploadID == UploadID && UploadingList[j].Upload.DownState === '已完成') {
-          const item = UploadingList[j];
-
-          UploadingList.splice(j, 1);
-          DB.deleteUploading(UploadID)
-
-          item.Upload.DownTime = Date.now();
-          item.UploadID = item.UploadID + '_' + item.Upload.DownTime.toString();
-          // UploadedList.splice(0, 0, item); // TODO 更新页面中的历史记录
-          DB.saveUploaded(item.UploadID, item)
-
-          break;
-        }
-      }
-      if (this.ListSelected.has(UploadID)) this.ListSelected.delete(UploadID)
-    },
-
-    /**
-     * 保存
-     * @param UploadID
-     * @param file_id
-     * @param upload_id
-     */
-    mSaveToUploading({ UploadID, file_id, upload_id }: { UploadID: string; file_id: string; upload_id: string }) {
-      const UploadingList = this.ListDataRaw
-      for (let j = 0; j < UploadingList.length; j++) {
-        if (UploadingList[j].UploadID == UploadID) {
-          UploadingList[j].Upload.file_id = file_id;
-          UploadingList[j].Upload.upload_id = upload_id;
-          DB.saveUploading(UploadingList[j].UploadID, UploadingList[j])
-          break;
-        }
-      }
     },
 
   }

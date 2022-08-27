@@ -198,7 +198,7 @@ export function RefreshScrollTo(element: any, top: number) {
 }
 
 const menulist = ['leftpansubmove', 'leftpansubzhankai', 'leftpanmenu', 'rightpansubmove', 'rightpansubbiaoji',
-  'rightpansubmore', 'rightpanmenu', 'rightpantrashmenu', 'rightmysharemenu', 'rightothersharemenu', 'uploadingrightmenu']
+  'rightpansubmore', 'rightpanmenu', 'rightpantrashmenu', 'rightmysharemenu', 'rightothersharemenu', 'uploadingrightmenu', 'uploadedrightmenu']
 const menuliststate = new Set()
 
 export function onHideRightMenu() {
