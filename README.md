@@ -2,7 +2,11 @@
 
 #### 项目说明
 
+原阿里云盘小白羊版v3的延续版
+
 基于阿里云盘网页版开发的PC客户端，支持win7-11，macOS，linux
+
+> **08.25：[v3开发人员测试版](https://github.com/PingKuNet/aliyunpan/releases/tag/v3.8.25.alpha)，追加上传，优化打包**
 
 > **04.14：[v2.12.14版已发布](https://github.com/liupan1890/aliyunpan/issues/639)，适配官网升级**
 
