@@ -114,6 +114,9 @@ export interface SettingState {
   yinsiLinkPassword: boolean
   
   yinsiZipPassword: boolean
+
+  /** 窗口大小变化提示音 */
+  isResizeDdsound: boolean
 }
 const setting: SettingState = {
   
@@ -177,7 +180,8 @@ const setting: SettingState = {
   debugFolderSizeCacheHour: 72,
   
   yinsiLinkPassword: false,
-  yinsiZipPassword: false
+  yinsiZipPassword: false,
+  isResizeDdsound: false
 }
 function patchSetting(val: any) {
   

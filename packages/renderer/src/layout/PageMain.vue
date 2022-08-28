@@ -25,10 +25,11 @@ const appStore = useAppStore()
 const winStore = useWinStore()
 const keyboardStore = useKeyboardStore()
 const footStore = useFootStore()
+const settingStore = useSettingStore()
 DebugLog.aLoadFromDB()
 
 const handleHideClick = (_e: any) => {
-  if (window.WebToElectron) window.WebToElectron({ cmd: useSettingStore().uiExitOnClose ? 'exit' : 'close' })
+  if (window.WebToElectron) window.WebToElectron({ cmd: settingStore.uiExitOnClose ? 'exit' : 'close' })
 }
 
 const handleHelpPage = () => {
@@ -63,7 +64,7 @@ const onResize = _.debounce(
 
     if (winStore.width != width || winStore.height != height) winStore.updateStore({ width, height })
     let ddsound = document.getElementById('ddsound') as { play: any } | null
-    if (ddsound) ddsound.play()
+    if (ddsound && settingStore.isResizeDdsound) ddsound.play()
   },
   20,
   { maxWait: 20 }

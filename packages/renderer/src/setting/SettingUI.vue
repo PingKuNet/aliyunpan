@@ -52,6 +52,21 @@ const handleCheckVer = () => {
         </template>
       </a-popover>
     </div>
+    <div class="settingspace"></div>
+    <div class="settinghead">:窗口大小变化提示音</div>
+    <div class="settingrow">
+      <MySwitch :value="settingStore.isResizeDdsound" @update:value="cb({ isResizeDdsound: $event })">开启窗口大小变化时发出提示音</MySwitch>
+      <a-popover position="right">
+        <i class="iconfont iconbulb" />
+        <template #content>
+          <div>
+            默认：<span class="opred">关闭</span>
+            <hr />
+            当应用首次启动时<br />和手动调整窗口大小时发出提示音
+          </div>
+        </template>
+      </a-popover>
+    </div>
   </div>
 </template>
 
