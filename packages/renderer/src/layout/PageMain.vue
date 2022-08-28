@@ -64,7 +64,7 @@ const onResize = _.debounce(
 
     if (winStore.width != width || winStore.height != height) winStore.updateStore({ width, height })
     let ddsound = document.getElementById('ddsound') as { play: any } | null
-    if (ddsound && settingStore.isResizeDdsound) ddsound.play()
+    if (ddsound && settingStore.uiResizeDdsound) ddsound.play()
   },
   20,
   { maxWait: 20 }

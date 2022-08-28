@@ -55,7 +55,7 @@ const handleCheckVer = () => {
     <div class="settingspace"></div>
     <div class="settinghead">:窗口大小变化提示音</div>
     <div class="settingrow">
-      <MySwitch :value="settingStore.isResizeDdsound" @update:value="cb({ isResizeDdsound: $event })">开启窗口大小变化时发出提示音</MySwitch>
+      <MySwitch :value="settingStore.uiResizeDdsound" @update:value="cb({ uiResizeDdsound: $event })">开启窗口大小变化时发出提示音</MySwitch>
       <a-popover position="right">
         <i class="iconfont iconbulb" />
         <template #content>

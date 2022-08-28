@@ -25,7 +25,9 @@ export interface SettingState {
   
   uiExitOnClose: boolean
 
-  
+  /** 窗口大小变化提示音 */
+  uiResizeDdsound: boolean
+
   
   uiFolderSize: boolean
   
@@ -115,8 +117,6 @@ export interface SettingState {
   
   yinsiZipPassword: boolean
 
-  /** 窗口大小变化提示音 */
-  isResizeDdsound: boolean
 }
 const setting: SettingState = {
   
@@ -181,7 +181,7 @@ const setting: SettingState = {
   
   yinsiLinkPassword: false,
   yinsiZipPassword: false,
-  isResizeDdsound: false
+  uiResizeDdsound: false
 }
 function patchSetting(val: any) {
   
@@ -196,7 +196,8 @@ function patchSetting(val: any) {
   setting.uiAutoPlaycursorVideo = defaultBool(val.uiAutoPlaycursorVideo, true)
   setting.uiShowPanPath = defaultBool(val.uiShowPanPath, true)
   setting.uiExitOnClose = defaultBool(val.uiExitOnClose, false)
-  
+  setting.uiResizeDdsound = defaultBool(val.uiResizeDdsound, false)
+
   setting.uiFolderSize = defaultBool(val.uiFolderSize, true)
   setting.uiFileOrderDuli = defaultString(val.uiFileOrderDuli, 'null')
   setting.uiTimeFolderFormate = defaultString(val.uiTimeFolderFormate, 'yyyy-MM-dd HH-mm-ss').replace('mm-dd', 'MM-dd').replace('HH-MM', 'HH-mm')
