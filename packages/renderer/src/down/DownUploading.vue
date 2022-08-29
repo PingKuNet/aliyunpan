@@ -232,7 +232,7 @@ body[arco-theme='dark'] .toppanarea .cell {
 
 .cell.filesize {
   font-size: 16px;
-  width: 82px;
+  width: 86px;
   text-align: right;
   flex-shrink: 0;
   flex-grow: 0;

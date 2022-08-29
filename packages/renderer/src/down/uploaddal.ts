@@ -27,7 +27,25 @@ export default class UploadDAL {
   static async aLoadFromDB() {
     const uploadingStore = useUploadingStore()
     uploadingStore.ListLoading = true
-    uploadingStore.ListDataRaw = await DB.getUploadingAll()
+    const UploadedList = await DB.getUploadingAll()
+    // 首次从DB中加载数据，如果上次意外停止则重新开始，如果手动暂停则保持
+    for (const stateUploadFile of UploadedList) {
+      if (!stateUploadFile.Upload.IsStop && stateUploadFile.Upload.DownState != '队列中') {
+        const upload = stateUploadFile.Upload
+        upload.IsDowning = false
+        upload.IsCompleted = false
+        upload.IsStop = false
+        upload.DownState = '队列中'
+        upload.DownSpeed = 0;
+        upload.DownSpeedStr = ''
+        upload.IsFailed = false
+        upload.FailedCode = 0;
+        upload.FailedMessage = ''
+        upload.AutoTry = 0;
+        upload.IsDowning = false
+      }
+    }
+    uploadingStore.ListDataRaw = UploadedList
     uploadingStore.mRefreshListDataShow(true)
     uploadingStore.ListLoading = false
     this.aLoadUploadedFromDB().then(r => {})

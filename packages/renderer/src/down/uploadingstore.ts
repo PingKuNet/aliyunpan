@@ -285,6 +285,7 @@ const useUploadingStore = defineStore('uploading', {
      */
     mStopUploading() {
       const uploadIDList: string[] = [];
+      const uploadList: Item[] = [];
       const UploadingList = this.ListDataRaw
       for (const UploadID of this.ListSelected) {
         for (let j = 0; j < UploadingList.length; j++) {
@@ -292,6 +293,7 @@ const useUploadingStore = defineStore('uploading', {
             const down = UploadingList[j].Upload;
             if (down.IsCompleted) continue;
             uploadIDList.push(UploadingList[j].UploadID);
+            uploadList.push(UploadingList[j])
             down.IsDowning = false;
             down.IsCompleted = false;
             down.IsStop = true;
@@ -309,6 +311,7 @@ const useUploadingStore = defineStore('uploading', {
       UploadCmd(false, 'stop', uploadIDList)
       // if (window.WinMsgToUI) window.WinMsgToUI({ cmd: 'UploadCmd', uploadCmd: 'stop', uploadAll: false, uploadIDList });
       this.mRefreshListDataShow(true)
+      DB.saveUploadings(JSON.parse(JSON.stringify(uploadList)))
     },
 
     /**
@@ -334,6 +337,7 @@ const useUploadingStore = defineStore('uploading', {
       UploadCmd(false, 'stop', uploadIDList)
       // if (window.WinMsgToUI) window.WinMsgToUI({ cmd: 'UploadCmd', uploadCmd: 'stop', uploadAll: true, uploadIDList });
       this.mRefreshListDataShow(true)
+      DB.saveUploadings(JSON.parse(JSON.stringify(UploadingList)))
     },
 
     /**

@@ -201,6 +201,10 @@ class XBYDB3 extends Dexie {
     if (!this.isOpen()) await this.open().catch(() => {})
     return this.iuploading.put(value, key).catch(() => {})
   }
+  async saveUploadings(items: IStateUploadFile[]) {
+    if (!this.isOpen()) await this.open().catch(() => {})
+    return this.iuploading.bulkPut(items).catch(() => {})
+  }
   async deleteUploadingAll() {
     if (!this.isOpen()) await this.open().catch(() => {})
     return this.iuploading.clear()
@@ -233,6 +237,7 @@ class XBYDB3 extends Dexie {
     if (!this.isOpen()) await this.open().catch(() => {})
     return this.iuploaded.clear()
   }
+
 }
 
 const DB = new XBYDB3()
