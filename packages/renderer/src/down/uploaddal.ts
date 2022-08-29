@@ -272,7 +272,21 @@ export default class UploadDAL {
    * @param parentid
    * @param localDirPath
    */
-  static UploadLocalDir(user_id: string, drive_id: string, parentid: string, localDirPath: string) {}
+  static UploadLocalDir(user_id: string, drive_id: string, parentid: string, localDirPath: string) {
+    if (!localDirPath.endsWith(path.sep)) localDirPath = localDirPath + path.sep;
+    return fsPromises
+      .readdir(localDirPath)
+      .then((childfiles: any) => {
+        for (let j = 0; j < childfiles.length; j++) {
+          childfiles[j] = localDirPath + childfiles[j]
+        }
+        return UploadDAL.UploadLocalFiles(user_id, drive_id, parentid, childfiles, false)
+      })
+      .catch((e: any) => {
+        console.log('dir', localDirPath, e)
+        return 0
+      }) as Promise<number>
+  }
 
   /**
    * 上传多个本地文件
