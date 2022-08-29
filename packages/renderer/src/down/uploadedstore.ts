@@ -275,9 +275,14 @@ const useUploadedStore = defineStore('uploaded', {
         return
       }
 
+      let opUploadIDList = uploadIDList;
+      if (uploadIDList.length > 10) {
+        message.info('选择的数量大于10个，已经为你优化打开前10个',10)
+        opUploadIDList = uploadIDList.slice(0,10)
+      }
       for (let j = 0; j < UploadedList.length; j++) {
         const UploadID = UploadedList[j].UploadID;
-        if (uploadIDList.includes(UploadID)) {
+        if (opUploadIDList.includes(UploadID)) {
           const localFilePath = UploadedList[j].Info.localFilePath;
           if (isDir) {
             openDir(localFilePath)
