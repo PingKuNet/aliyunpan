@@ -343,7 +343,7 @@ export default class UploadDAL {
                 AutoTry: 0,
                 upload_id: '',
                 file_id: '',
-                IsBreakExist: false
+                IsBreakExist: true
               },
             });
           })

@@ -16,7 +16,7 @@ export interface ServerState {
 const useServerStore = defineStore('serverstore', {
   state: (): ServerState => ({
     ShareSiteList: [],
-    HelpUrl: 'aHR0cHM6Ly9naXRodWIuY29tL2xpdXBhbjE4OTAvYWxpeXVucGFuL3dpa2k='
+    HelpUrl: 'aHR0cHM6Ly9naXRodWIuY29tL1BpbmdLdU5ldC9hbGl5dW5wYW4='
   }),
   actions: {
     
@@ -25,7 +25,7 @@ const useServerStore = defineStore('serverstore', {
     },
     
     mSaveHelpUrl(url: string) {
-      this.HelpUrl = url || 'aHR0cHM6Ly9naXRodWIuY29tL2xpdXBhbjE4OTAvYWxpeXVucGFuL3dpa2k='
+      this.HelpUrl = url || 'aHR0cHM6Ly9naXRodWIuY29tL1BpbmdLdU5ldC9hbGl5dW5wYW4='
     }
   }
 })

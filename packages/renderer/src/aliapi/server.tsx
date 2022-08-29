@@ -79,9 +79,7 @@ export default class ServerHttp {
     )
   }
 
-  //console.log(b64encode('https://gitee.com/liupanxiaobaiyang/aliyunpan/raw/master/config2.json'))
-
-  static configUrl = b64decode('aHR0cHM6Ly9naXRlZS5jb20vbGl1cGFueGlhb2JhaXlhbmcvYWxpeXVucGFuL3Jhdy9tYXN0ZXIvY29uZmlnMy5qc29u')
+  static configUrl = b64decode('aHR0cHM6Ly9naXRlZS5jb20vUGluZ0t1L2FsaXl1bnBhbi1jb25maWcvcmF3L21hc3Rlci9jb25maWczLmpzb24=')
 
   static showVer = false
   

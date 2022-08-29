@@ -40,7 +40,7 @@ try {
 
 let ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55'
 let Referer = 'https://www.aliyundrive.com/'
-app.setAppUserModelId('com.github.liupan1890')
+app.setAppUserModelId('com.github.pingkunet')
 app.name = 'alixby3'
 const gotTheLock = app.requestSingleInstanceLock()
 const isDbu = false
@@ -462,8 +462,8 @@ function ShowError(title: string, errmsg: string) {
 
 app.setAboutPanelOptions({
   applicationName: '阿里云盘小白羊版',
-  copyright: 'liupan1890',
-  website: 'https://github.com/liupan1890/aliyunpan',
+  copyright: 'PingKuNet',
+  website: 'https://github.com/PingKuNet/aliyunpan',
   iconPath: getResourcesPath('app.png'),
   applicationVersion: '30'
 })
