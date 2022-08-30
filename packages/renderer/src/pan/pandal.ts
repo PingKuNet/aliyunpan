@@ -22,6 +22,9 @@ export interface PanSelectedData {
 
 export default class PanDAL {
 
+  static startTime(){console.time('aReLoadDrive')}
+  static endTime(){console.timeEnd('aReLoadDrive')}
+
   static async aReLoadDrive(user_id: string, drive_id: string) {
     const pantreeStore = usePanTreeStore()
     pantreeStore.mSaveUser(user_id, drive_id)
@@ -35,7 +38,8 @@ export default class PanDAL {
 
     await PanDAL.aShowDir(drive_id, 'root', true)
 
-    console.time('aReLoadDrive')
+    //console.time('aReLoadDrive')
+    PanDAL.startTime()
     if (cache) {
       let dt = await DB.getValueNumber('AllDir_' + drive_id)
       // let expiresTime = 1000 * 60 * 60 // 1小时，全部文件夹DB缓存的过期时间
@@ -50,7 +54,8 @@ export default class PanDAL {
       .then((data) => {
         if (!data.next_marker) {
           TreeStore.SaveAllDir(drive_id, data.items, true).then(() => {
-            console.timeEnd('aReLoadDrive')
+            //console.timeEnd('aReLoadDrive')
+            PanDAL.endTime()
           })
         } else {
           DebugLog.mSaveLog('warning', '列出文件夹失败file_id=all' + ' next_marker=' + data.next_marker)

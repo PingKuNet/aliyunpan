@@ -33,7 +33,7 @@ class XBYDB3 extends Dexie {
         inumber: '',
         ibool: '',
 
-        itoken: '',
+        itoken: 'user_id',
         iothershare: 'share_id',
         idowning: '',
         idowned: '',

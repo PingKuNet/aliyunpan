@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import _ from 'lodash'
 import { useWinStore, WinState } from '@/store'
 
 export default defineComponent({

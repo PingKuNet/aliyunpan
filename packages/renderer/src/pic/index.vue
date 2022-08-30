@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MySplit from '@/layout/MySplit.vue'
-import PicLeft from './PicLeft.vue';
-import PicRight from './PicRight.vue';
+import PicLeft from '@/pic/PicLeft.vue'
+import PicRight from '@/pic/PicRight.vue'
 </script>
 
 <template>

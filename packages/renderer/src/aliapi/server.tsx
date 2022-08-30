@@ -58,7 +58,7 @@ export default class ServerHttp {
         return { state: 'error', msg: '网络错误' }
       })
       .then((resp) => {
-        if (resp.state == 'error' && resp.msg == '网络错误' && isfirst == true) {
+        if (resp.state == 'error' && resp.msg == '网络错误' && isfirst) {
           
           return ServerHttp.Sleep(2000).then(() => {
             return ServerHttp.Post(postdata, false) 
@@ -79,6 +79,7 @@ export default class ServerHttp {
     )
   }
 
+  //static configUrl = b64decode('aHR0cHM6Ly9naXRlZS5jb20vUGluZ0t1L2FsaXl1bnBhbi1jb25maWcvcmF3L2RldmVsb3AvY29uZmlnMy5qc29u')
   static configUrl = b64decode('aHR0cHM6Ly9naXRlZS5jb20vUGluZ0t1L2FsaXl1bnBhbi1jb25maWcvcmF3L21hc3Rlci9jb25maWczLmpzb24=')
 
   static showVer = false
@@ -115,14 +116,15 @@ export default class ServerHttp {
           const verurl = response.data.VerUrl || ''
           const appnewurl = response.data.AppNewUrl || ''
 
-          if (parseInt(v2) > parseInt(v1)) {
+          const v1Int = parseInt(v1), v2Int = parseInt(v2)
+          if (v2Int > v1Int) {
             if (appnewurl) {
               message.info('检测到新版本 ' + response.data.ExeVer)
               let isdown = await this.AutoDownload(B64decode(appnewurl))
               if (isdown) return 
             }
 
-            if (ServerHttp.showVer == false) {
+            if (!ServerHttp.showVer) {
               ServerHttp.showVer = true 
 
               Modal.confirm({
@@ -143,8 +145,10 @@ export default class ServerHttp {
                 content: () => h('div', { innerHTML: info, class: { vermodal: true }, style: { minWidth: '540px' } })
               })
             }
-          } else {
-            message.info('已经是最新版 ' + response.data.ExeVer + ' 一般每周日晚8-10点发布新版')
+          } else if (v2Int == v1Int) {
+            message.info('已经是最新版 ' + response.data.ExeVer + '新版本发布一般在周六/周日晚上8-10点', 6)
+          } else if (v2Int < v1Int) {
+            message.info('您的本地版本 ' + Config.appVersion + ' 已高于服务器版本 ' + response.data.ExeVer, 6)
           }
         }
       })

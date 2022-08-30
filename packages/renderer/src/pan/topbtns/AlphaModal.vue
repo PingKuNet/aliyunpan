@@ -23,12 +23,15 @@ export default defineComponent({
 <template>
   <a-modal :visible="visible" modal-class="modalclass alphamodal" :mask="false" @cancel="handleHide" :footer="false" :unmount-on-close="true" :mask-closable="false">
     <template #title>
-      <span class="modaltitle">alpha</span>
+      <span class="modaltitle">提示</span>
     </template>
     <div class="modalbody" style="width: 320px">
       <a-typography>
-        <a-typography-title :heading="5" class="alphatitle">开发人员测试版本</a-typography-title>
-        <a-typography-paragraph class="alphadesc"> 很尴尬，由于时间原因，开发进度很慢。此版本中部分重要功能缺失，并不适合日常使用。我仍在努力开发，会慢慢将缺失的功能补上来！ </a-typography-paragraph>
+        <a-typography-title :heading="5" class="alphatitle">这是Beta测试版本</a-typography-title>
+        <a-typography-paragraph class="alphadesc">
+          <br/><p>这个版已经拥有了上传下载功能，但可能并不是很稳定，还有很多功能正在开发完善中，不太适合日常使用。</p>
+          <p>如有问题请打开【帮助文档】到GitHub查阅反馈！</p>
+        </a-typography-paragraph>
       </a-typography>
 
       <br />

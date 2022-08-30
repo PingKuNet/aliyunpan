@@ -35,7 +35,7 @@ export default defineComponent({
     </a-layout-header>
     <a-layout-content style="height: calc(100vh - 42px); padding-top: 8px; background: #f2f4f7">
       <div className="doc-preview" id="doc-preview" style="width: 100%; height: 100%">
-        <Webview style="width: 100%; height: 100%" src="https://github.com/PingKuNet/aliyunpan/wiki"></Webview>
+        <webview style="width: 100%; height: 100%" src="https://github.com/PingKuNet/aliyunpan/wiki"></webview>
       </div>
     </a-layout-content>
   </a-layout>

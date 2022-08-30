@@ -15,7 +15,13 @@ export default defineConfig({
     }
   },
 
-  plugins: [vue(),electron()],
+  plugins: [vue({
+    template:{
+      compilerOptions:{
+        isCustomElement: tag => tag == 'webview'
+      }
+    }
+  }),electron()],
   base: './',
   build: {
     sourcemap: false,

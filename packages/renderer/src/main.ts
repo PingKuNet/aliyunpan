@@ -61,7 +61,7 @@ app.config.errorHandler = function (err: any, vm, info) {
   } catch {}
   return true
 }
-app.config.compilerOptions.isCustomElement = (tag: string) => tag == 'webview'
+//app.config.compilerOptions.isCustomElement = (tag: string) => tag == 'webview'
 app.config.performance = true
 app.use(ArcoVue, {})
 app.use(store)
