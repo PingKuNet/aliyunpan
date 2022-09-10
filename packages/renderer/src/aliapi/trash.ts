@@ -136,8 +136,8 @@ export default class AliTrash {
       order_direction: order
     }
     const resp = await AliHttp.Post(url, postdata, dir.m_user_id, '')
-    //todo::
-    //return AliDirFileList._FileListOnePage(dir, resp)
-    return Promise.resolve(false)
+    //todo:: 这里不完善
+    return AliDirFileList._FileListOnePage(dir, resp, -1)
+    //return Promise.resolve(false)
   }
 }

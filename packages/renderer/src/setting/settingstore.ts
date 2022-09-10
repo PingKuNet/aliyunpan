@@ -233,7 +233,7 @@ function patchSetting(val: any) {
   if (setting.ariaUrl.indexOf(':') < 0) setting.ariaUrl = ''
   setting.ariaPwd = defaultString(val.ariaPwd, '')
   setting.ariaHttps = defaultBool(val.ariaHttps, false)
-  setting.ariaState = 'local' 
+  setting.ariaState = defaultValue(val.ariaState, ['local', 'remote'])
   setting.ariaLoading = false 
   
   setting.debugCacheSize = defaultString(val.debugCacheSize, '')

@@ -1,7 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 
-import { menuFavSelectFile, menuTrashSelectFile, menuCopySelectedFile, menuJumpToDir, menuCreatShare, menuVideoXBT, menuDLNA, menuM3U8Download } from '../topbtns/topbtn'
+import { menuFavSelectFile, menuTrashSelectFile, menuCopySelectedFile, menuJumpToDir, menuCreatShare,
+  menuVideoXBT, menuDLNA, menuM3U8Download, menuDownload } from '../topbtns/topbtn'
 import { modalRename, modalShuXing } from '../../utils/modal'
 
 export default defineComponent({
@@ -29,14 +30,15 @@ export default defineComponent({
   },
   setup() {
     const istree = false
-    return { istree, menuCreatShare, menuFavSelectFile, menuTrashSelectFile, modalRename, menuCopySelectedFile, modalShuXing, menuJumpToDir, menuVideoXBT, menuDLNA, menuM3U8Download }
+    return { istree, menuCreatShare, menuFavSelectFile, menuTrashSelectFile, modalRename, menuCopySelectedFile,
+      modalShuXing, menuJumpToDir, menuVideoXBT, menuDLNA, menuM3U8Download, menuDownload }
   }
 })
 </script>
 
 <template>
   <div class="toppanbtn" v-show="isselected && dirtype !== 'trash' && dirtype !== 'recover'">
-    <a-button type="text" size="small" tabindex="-1" @click="" title="Ctrl+D"><i class="iconfont icondownload" />下载</a-button>
+    <a-button type="text" size="small" tabindex="-1" @click="() => menuDownload(istree)" title="Ctrl+D"><i class="iconfont icondownload" />下载</a-button>
     <a-button v-show="dirtype == 'pan'" type="text" size="small" tabindex="-1" @click="() => menuCreatShare(istree, 'pan')" title="Ctrl+S"><i class="iconfont iconfenxiang" />分享</a-button>
     <a-button v-show="!isallfavored" type="text" size="small" tabindex="-1" @click="() => menuFavSelectFile(istree, true)" title="Ctrl+G"><i class="iconfont iconcrown" />收藏</a-button>
     <a-button v-show="isallfavored" type="text" size="small" tabindex="-1" @click="() => menuFavSelectFile(istree, false)" title="Ctrl+G"><i class="iconfont iconcrown2" />取消收藏</a-button>

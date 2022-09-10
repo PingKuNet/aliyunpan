@@ -1,10 +1,10 @@
 import ServerHttp from '@/aliapi/server'
 import { useAppStore, useFootStore, useSettingStore } from '@/store'
 import AppCache from '@/utils/appcache'
-import DownDAL from '@/down/downdal'
-import UploadDAL from '@/down/uploaddal'
+import DownDAL from '@/down/DownDAL'
+import UploadDAL from '@/down/UploadDAL'
 import ShareDAL from '@/share/share/ShareDAL'
-import { UploadEvent } from '@/down/uploadservice'
+import { UploadEvent } from '@/down/UploadService'
 import UserDAL from '@/user/userdal'
 import DebugLog from '@/utils/debuglog'
 

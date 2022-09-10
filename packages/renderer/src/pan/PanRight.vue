@@ -22,7 +22,7 @@ import DirTopPath from './menus/DirTopPath.vue'
 import message from '@/utils/message'
 import { menuOpenFile } from '@/utils/openfile'
 import UserDAL from '@/user/userdal'
-import UploadDAL from '@/down/uploaddal'
+import UploadDAL from '@/down/UploadDAL'
 import usePanTreeStore from '@/pan/pantreestore'
 
 const viewlist = ref()

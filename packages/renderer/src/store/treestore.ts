@@ -1,8 +1,8 @@
-import { IAliFileResp } from '../aliapi/dirfilelist'
-import { IAliGetDirModel, IAliGetFileModel } from '../aliapi/alimodels'
-import DB from '../utils/db'
-import { humanSize, SortNumber } from '../utils/format'
-import { ArrayCopy, HanToPin } from '../utils/utils'
+import { IAliFileResp } from '@/aliapi/dirfilelist'
+import { IAliGetDirModel, IAliGetFileModel } from '@/aliapi/alimodels'
+import DB from '@/utils/db'
+import { humanSize, SortNumber } from '@/utils/format'
+import { ArrayCopy, HanToPin } from '@/utils/utils'
 import { usePanTreeStore, useSettingStore } from '@/store'
 
 export interface TreeNodeData {

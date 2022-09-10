@@ -1,5 +1,6 @@
 import fs from 'fs'
-import electron, { ipcRenderer } from 'electron'
+import electron, { ipcRenderer, BrowserWindow } from 'electron'
+import { getCurrentWindow } from '@electron/remote'
 
 window.Electron = electron
 process.noAsar = true
@@ -160,6 +161,15 @@ function createRightMenu() {
     },
     false
   )
+  window.addEventListener('keydown', e => {
+    const {altKey, ctrlKey, metaKey, keyCode} = e
+    /** alt + ctrl + (Command | Windows) + d */
+    if(altKey && ctrlKey && metaKey && keyCode === 68){
+      const currentWindow = getCurrentWindow()
+      currentWindow && currentWindow.webContents.openDevTools();
+      e.preventDefault();
+    }
+  },false)
 }
 /**
  * 判断点击区域可编辑

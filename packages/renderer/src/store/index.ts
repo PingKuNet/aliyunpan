@@ -7,20 +7,25 @@ import useModalStore from './modalstore'
 import type { ModalState } from './modalstore'
 import useWinStore from './winstore'
 import type { WinState } from './winstore'
-import useSettingStore from '../setting/settingstore'
-import useUserStore from '../user/userstore'
-import type { ITokenInfo } from '../user/userstore'
-import usePanTreeStore from '../pan/pantreestore'
-import usePanFileStore from '../pan/panfilestore'
+import useSettingStore from '@/setting/settingstore'
+import useUserStore from '@/user/userstore'
+import type { ITokenInfo } from '@/user/userstore'
+import usePanTreeStore from '@/pan/pantreestore'
+import usePanFileStore from '@/pan/panfilestore'
 
 import useServerStore from './serverstore'
-import type { IOtherShareLinkModel } from '../share/share/OtherShareStore'
+import type { IOtherShareLinkModel } from '@/share/share/OtherShareStore'
 import type { IShareSiteModel } from './serverstore'
-import useMyShareStore from '../share/share/MyShareStore'
-import useOtherShareStore from '../share/share/OtherShareStore'
-import useMyFollowingStore from '../share/following/MyFollowingStore'
-import useOtherFollowingStore from '../share/following/OtherFollowingStore'
-import type { FollowingState } from '../share/following/OtherFollowingStore'
+import useMyShareStore from '@/share/share/MyShareStore'
+import useOtherShareStore from '@/share/share/OtherShareStore'
+import useMyFollowingStore from '@/share/following/MyFollowingStore'
+import useOtherFollowingStore from '@/share/following/OtherFollowingStore'
+import type { FollowingState } from '@/share/following/OtherFollowingStore'
+
+import useUploadingStore from '@/down/UploadingStore'
+import useUploadedStore from '@/down/UploadedStore'
+import useDownStore from '@/down/DownStore'
+import useDowningStore from '@/down/DowningStore'
 
 import useFootStore from './footstore'
 import type { AsyncModel } from './footstore'
@@ -49,6 +54,10 @@ export {
   FollowingState,
   useMyFollowingStore,
   useFootStore,
-  AsyncModel
+  AsyncModel,
+  useUploadingStore,
+  useUploadedStore,
+  useDowningStore,
+  useDownStore
 }
 export default pinia

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAppStore, useKeyboardStore, KeyboardState, useUserStore, useWinStore } from '@/store'
-import useUploadedStore from '@/down/uploadedstore'
+import useUploadedStore from '@/down/UploadedStore'
 import { onShowRightMenu, onHideRightMenuScroll, RefreshScroll, RefreshScrollTo, TestCtrl, TestKey, TestKeyboardScroll, TestKeyboardSelect } from '@/utils/keyboardhelper'
 import { Tooltip as AntdTooltip } from 'ant-design-vue'
 import 'ant-design-vue/es/tooltip/style/css'

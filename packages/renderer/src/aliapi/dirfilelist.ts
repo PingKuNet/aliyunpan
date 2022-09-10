@@ -374,7 +374,7 @@ export default class AliDirFileList {
         dir.punished_file_count += resp.body.punished_file_count || 0
 
         let pan = usePanFileStore()
-        if (pan.DriveID == dir.m_drive_id) pan.mSaveDirFileLoadingPart(pageindex, dirpart)
+        if (pan.DriveID == dir.m_drive_id) pan.mSaveDirFileLoadingPart(pageindex, dirpart) // TODO 这里要重新设计,API层不要调用 Store 层的逻辑
 
         if (isvideo && dir.items.length >= 500) dir.next_marker = ''
         return true

@@ -197,7 +197,7 @@ export default class AliFollowing {
 
   
   static async ApiOtherFollowingClassListAll() {
-    const url = 'https://gitee.com/liupanxiaobaiyang/aliyunpan/raw/master/follow.json'
+    const url = 'https://gitee.com/PingKu/aliyunpan-config/raw/master/follow.json'
     const resp = await AliHttp.Get(url, '')
     return resp.body?.FollowList || []
   }

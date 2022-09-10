@@ -3,7 +3,7 @@ import AliFile from '@/aliapi/file'
 import AliFileCmd from '@/aliapi/filecmd'
 import AliDirFileList, { IAliFileResp, NewIAliFileResp } from '@/aliapi/dirfilelist'
 import AliTrash from '@/aliapi/trash'
-import UploadDAL from '@/down/uploaddal'
+import UploadDAL from '@/down/UploadDAL'
 import { IPageVideoXBT } from '@/store/appstore'
 import DebugLog from '@/utils/debuglog'
 import message from '@/utils/message'
@@ -12,6 +12,8 @@ import { ArrayKeyList } from '@/utils/utils'
 import PanDAL from '../pandal'
 import usePanFileStore from '../panfilestore'
 import usePanTreeStore from '../pantreestore'
+import DownDAL from '@/down/DownDAL'
+import { useSettingStore } from '@/store'
 
 let topbtnLock = new Set()
 
@@ -504,4 +506,26 @@ export function menuM3U8Download() {
     return
   }
   modalM3U8Download()
+}
+
+/**
+ * 下载
+ * @param isTree
+ */
+export function menuDownload(isTree: boolean) {
+  const selectedData = PanDAL.GetPanSelectedData(isTree)
+  if (selectedData.iserror) {
+    message.error('创建下载任务失败 父文件夹错误')
+    return
+  }
+  const settingStore = useSettingStore()
+  const savePath = settingStore.AriaIsLocal ? settingStore.downSavePath : settingStore.ariaSavePath
+  const savePathFull = settingStore.downSavePathFull
+  let files: IAliGetFileModel[] = []
+  if (isTree) {
+    files = [{ ...usePanTreeStore().selectDir, isdir: true, ext: '', category: '', icon: '', sizestr: '', timestr: '', starred: false, thumbnail: '' }]
+  } else {
+    files = usePanFileStore().GetSelected()
+  }
+  DownDAL.aAddDownload(files, savePath, savePathFull, true)
 }

@@ -13,7 +13,7 @@ import DirLeftMenu from './menus/DirLeftMenu.vue'
 import { TreeNodeData } from '@/store/treestore'
 import { dropMoveSelectedFile } from './topbtns/topbtn'
 import message from '@/utils/message'
-import UploadDAL from '@/down/uploaddal'
+import UploadDAL from '@/down/UploadDAL'
 
 const treeref = ref()
 const winStore = useWinStore()

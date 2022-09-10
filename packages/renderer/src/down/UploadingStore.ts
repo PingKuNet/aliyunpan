@@ -5,7 +5,7 @@ import { GetSelectedList, GetFocusNext, SelectAll, MouseSelectOne, KeyboardSelec
 import { humanSize } from '@/utils/format'
 import message from '@/utils/message'
 import DB from '@/utils/db'
-import { UploadCmd } from '@/down/uploadservice'
+import { UploadCmd } from '@/down/UploadService'
 
 type Item = IStateUploadFile
 type State = UploadingState

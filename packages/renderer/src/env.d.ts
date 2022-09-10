@@ -14,7 +14,6 @@ declare module 'jschardet'
 declare function pinyinlite(text: string, config: any): any
 declare function videojs(ref: any, options: any, cb: any): any
 
-declare module 'aria2/index.js'
 declare module '@arco-design/web-vue/lib/modal/modal'
 declare module 'video.js'
 // declare module 'dlnacasts2' // TODO 没有安装？

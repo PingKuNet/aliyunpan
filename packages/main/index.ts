@@ -156,6 +156,7 @@ function createWindow() {
   }
 
   if (isDbu || DEBUGGING) {
+    //session.defaultSession.loadExtension(getResourcesPath('aliyunpan/vue-devtools'))
     mainWindow.webContents.openDevTools()
   } else {
     mainWindow.webContents.on('devtools-opened', () => {
@@ -864,6 +865,7 @@ ipcMain.on('WebOpenWindow', (event, data) => {
   }
   remote.enable(win.webContents)
   if (isDbu || DEBUGGING) {
+    //session.defaultSession.loadExtension(getResourcesPath('aliyunpan/vue-devtools'))
     win.webContents.openDevTools()
   } else {
     win.webContents.on('devtools-opened', () => {

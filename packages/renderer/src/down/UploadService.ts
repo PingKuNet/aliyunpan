@@ -4,11 +4,11 @@ import { IUploadCreat } from '@/aliapi/models'
 import AliUpload from '@/aliapi/upload'
 import AliUploadHash from '@/aliapi/uploadhash'
 import DB from '@/utils/db'
-import { IAriaDownProgress } from '@/down/downdal'
+import { IAriaDownProgress } from '@/down/DownDAL'
 import { IStateUploadFile } from '@/aliapi/models'
 import { ITokenInfo } from '@/user/userstore'
 import AliFileCmd from '@/aliapi/filecmd'
-import UploadDAL from '@/down/uploaddal'
+import UploadDAL from '@/down/UploadDAL'
 import fsPromises from 'fs/promises'
 
 const UploadList: IStateUploadFile[] = [];

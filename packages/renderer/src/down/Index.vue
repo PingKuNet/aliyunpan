@@ -18,11 +18,11 @@ const appStore = useAppStore()
       <a-menu :selected-keys="[appStore.GetAppTabMenu]" @update:selected-keys="appStore.toggleTabMenu('down', $event[0])" :style="{ width: '100%' }" class="xbyleftmenu">
         <a-menu-item key="DowningRight">
           <template #icon><i class="iconfont icondownload" /></template>
-          下载中 x
+          下载中
         </a-menu-item>
         <a-menu-item key="DownedRight">
           <template #icon><i class="iconfont icondesktop" /></template>
-          已下载完 x
+          已下载完
         </a-menu-item>
         <a-menu-item key="UploadingRight">
           <template #icon><i class="iconfont iconcloud-upload" /></template>

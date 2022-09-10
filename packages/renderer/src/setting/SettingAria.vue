@@ -11,8 +11,8 @@ const settingStore = useSettingStore()
 const cb = (val: any) => {
   settingStore.updateStore(val)
 }
-const isRemote = ref(false)
-const ariaLoading = ref(false)
+const ariaState = ref(settingStore.ariaState)
+const ariaLoading = ref(settingStore.ariaLoading)
 const ariaSavePath = ref(settingStore.ariaSavePath)
 const ariaUrl = ref(settingStore.ariaUrl)
 const ariaPwd = ref(settingStore.ariaPwd)
@@ -50,7 +50,7 @@ const handleAriaConn = () => {
     const secret = ariaPwd.value
 
     AriaTest(settingStore.ariaHttps, host, port, secret).then((issuccess: boolean) => {
-      if (issuccess == true) {
+      if (issuccess) {
         
         settingStore.updateStore({ ariaState: 'remote' })
         AriaChangeToRemote().then((isOnline: boolean | undefined) => {
@@ -80,7 +80,7 @@ const handleAriaOff = (tip: boolean) => {
     .then((isOnline: boolean) => {
       settingStore.ariaLoading = false 
       if (tip) {
-        if (isOnline == true) message.warning('已经从远程断开，并连接到本地Aria')
+        if (isOnline) message.warning('已经从远程断开，并连接到本地Aria')
         else message.error('已经从远程断开，连接到本地Aria失败')
       }
     })
@@ -98,7 +98,7 @@ const handleAriaOff = (tip: boolean) => {
 
     <div class="settinghead">:Aria远程下载文件保存位置</div>
     <div class="settingrow">
-      <a-input tabindex="-1" :disabled="isRemote" :style="{ width: '300px' }" placeholder="粘贴远程电脑上的文件夹路径" v-model:model-value="ariaSavePath" />
+      <a-input tabindex="-1" :disabled="!settingStore.AriaIsLocal" :style="{ width: '300px' }" placeholder="粘贴远程电脑上的文件夹路径" v-model:model-value="ariaSavePath" />
       <a-popover position="bottom">
         <i class="iconfont iconbulb" />
         <template #content>
@@ -115,7 +115,7 @@ const handleAriaOff = (tip: boolean) => {
     <div class="settingspace"></div>
     <div class="settinghead">:Aria连接地址RPC IP:Port 或 域名:Port</div>
     <div class="settingrow">
-      <a-input tabindex="-1" :disabled="isRemote" :style="{ width: '300px' }" placeholder="Aria2连接地址（IP:Port）" v-model:model-value="ariaUrl">
+      <a-input tabindex="-1" :disabled="!settingStore.AriaIsLocal" :style="{ width: '300px' }" placeholder="Aria2连接地址（IP:Port）" v-model:model-value="ariaUrl">
         <template #prefix> ws:// </template>
         <template #suffix> /jsonrpc </template>
       </a-input>
@@ -137,7 +137,7 @@ const handleAriaOff = (tip: boolean) => {
     <div class="settingspace"></div>
     <div class="settinghead">:Aria连接密码 secret</div>
     <div class="settingrow">
-      <a-input tabindex="-1" :disabled="isRemote" :style="{ width: '300px' }" placeholder="Aria2连接密码" v-model:model-value="ariaPwd" />
+      <a-input tabindex="-1" :disabled="!settingStore.AriaIsLocal" :style="{ width: '300px' }" placeholder="Aria2连接密码" v-model:model-value="ariaPwd" />
       <a-popover position="bottom">
         <i class="iconfont iconbulb" />
         <template #content>
@@ -168,17 +168,17 @@ const handleAriaOff = (tip: boolean) => {
     </div>
     <div class="settingspace"></div>
     <div class="settinghead">:Aria连接状态</div>
-    <div class="settingrow" v-show="isRemote == false">
-      <a-button type="outline" size="small" tabindex="-1" :loading="ariaLoading" @click="handleAriaConn">当前是 本地模式，点击切换</a-button>
+    <div class="settingrow" v-show="settingStore.AriaIsLocal">
+      <a-button type="outline" size="small" tabindex="-1" :loading="settingStore.ariaLoading" @click="handleAriaConn">当前是 本地模式，点击切换</a-button>
     </div>
-    <div class="settingrow" v-show="ariaLoading == false && isRemote == false">
+    <div class="settingrow" v-show="!settingStore.ariaLoading && settingStore.AriaIsLocal">
       <a-typography-text type="secondary">新创建的下载任务都会下载到本地，只能管理本地的下载任务</a-typography-text>
     </div>
 
-    <div class="settingrow" v-show="isRemote">
-      <a-button type="primary" size="small" tabindex="-1" :loading="ariaLoading" @click="handleAriaOff(false)">当前是 远程Aria模式，点击切换</a-button>
+    <div class="settingrow" v-show="!settingStore.AriaIsLocal">
+      <a-button type="primary" size="small" tabindex="-1" :loading="settingStore.ariaLoading" @click="handleAriaOff(false)">当前是 远程Aria模式，点击切换</a-button>
     </div>
-    <div class="settingrow" v-show="ariaLoading == false && isRemote">
+    <div class="settingrow" v-show="!settingStore.ariaLoading && !settingStore.AriaIsLocal">
       <a-typography-text type="secondary">远程模式，新创建的下载任务都会下载到Aria服务器上，不会下载到本地，只能管理远程的下载任务。注意：远程下载时不能退出小白羊</a-typography-text>
     </div>
   </div>

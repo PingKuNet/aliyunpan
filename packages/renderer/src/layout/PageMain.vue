@@ -10,7 +10,7 @@ import _ from 'lodash'
 import Setting from '@/setting/index.vue'
 import Rss from '@/rss/index.vue'
 import Share from '@/share/index.vue'
-import Down from '@/down/index.vue'
+import Down from '@/down/Index.vue'
 import Pan from '@/pan/index.vue'
 import Pic from '@/pic/index.vue'
 

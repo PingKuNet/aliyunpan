@@ -1,13 +1,13 @@
-import type { IAriaDownProgress } from "./downdal"
+import type { IAriaDownProgress } from "./DownDAL"
 import path from 'path'
 import { GetKeyHashNumber, humanSize } from '@/utils/format'
 import message from '@/utils/message'
 import type { IStateUploadFile } from '@/aliapi/models'
-import useUploadingStore from '@/down/uploadingstore'
-import useUploadedStore from '@/down/uploadedstore'
+import useUploadingStore from '@/down/UploadingStore'
+import useUploadedStore from '@/down/UploadedStore'
 import DB from '@/utils/db'
-import useSettingStore from '@/setting/settingstore'
-import { UploadAdd, UploadCmd } from '@/down/uploadservice'
+import { useSettingStore } from '@/store'
+import { UploadAdd, UploadCmd } from '@/down/UploadService'
 import fsPromises from 'fs/promises'
 
 export default class UploadDAL {
@@ -27,9 +27,9 @@ export default class UploadDAL {
   static async aLoadFromDB() {
     const uploadingStore = useUploadingStore()
     uploadingStore.ListLoading = true
-    const UploadedList = await DB.getUploadingAll()
+    const stateUploadFiles = await DB.getUploadingAll()
     // 首次从DB中加载数据，如果上次意外停止则重新开始，如果手动暂停则保持
-    for (const stateUploadFile of UploadedList) {
+    for (const stateUploadFile of stateUploadFiles) {
       if (!stateUploadFile.Upload.IsStop && stateUploadFile.Upload.DownState != '队列中') {
         const upload = stateUploadFile.Upload
         upload.IsDowning = false
@@ -45,7 +45,7 @@ export default class UploadDAL {
         upload.IsDowning = false
       }
     }
-    uploadingStore.ListDataRaw = UploadedList
+    uploadingStore.ListDataRaw = stateUploadFiles
     uploadingStore.mRefreshListDataShow(true)
     uploadingStore.ListLoading = false
     this.aLoadUploadedFromDB().then(r => {})
@@ -153,8 +153,8 @@ export default class UploadDAL {
         for (let j = 0; j < UploadingList.length; j++) {
           if (UploadingList[j].UploadID == UploadID) {
 
-            const downitem = UploadingList[j];
-            const down = downitem.Upload;
+            const downItem = UploadingList[j];
+            const down = downItem.Upload;
             const totalLength = parseInt(list[i].totalLength) || 0;
             down.DownSize = parseInt(list[i].completedLength) || 0;
             down.DownSpeed = parseInt(list[i].downloadSpeed) || 0;
@@ -174,7 +174,7 @@ export default class UploadDAL {
 
             if (isComplete) {
               down.DownState = '已完成';
-              down.DownSize = downitem.Info.size;
+              down.DownSize = downItem.Info.size;
               down.DownSpeed = 0;
               down.DownSpeedStr = '';
               down.DownProcess = 100;
@@ -209,7 +209,7 @@ export default class UploadDAL {
                 ((lasttime % 3600) / 60).toFixed(0).padStart(2, '0') +
                 ':' +
                 (lasttime % 60).toFixed(0).padStart(2, '0')
-              DB.saveUploading(downitem.UploadID, JSON.parse(JSON.stringify(downitem)))
+              DB.saveUploading(downItem.UploadID, JSON.parse(JSON.stringify(downItem)))
             } else {
               //console.log('update', UploadingList[j]);
             }
@@ -257,7 +257,7 @@ export default class UploadDAL {
         item.Upload.DownTime = Date.now()
         item.UploadID = item.Upload.DownTime.toString() + '_' + item.UploadID
         uploadedStore.ListDataRaw.splice(0, 0, item)
-        uploadedStore.mRefreshListDataShow(true)  // TODO 当上传数量较大时会不会不性能问题
+        uploadedStore.mRefreshListDataShow(true)  // TODO 当上传数量较大时会不会有性能问题
         DB.saveUploaded(item.UploadID, JSON.parse(JSON.stringify(item)))
         break
       }

@@ -1,14 +1,24 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { menuTrashSelectFile, menuCopySelectedFile, menuCreatShare } from '../topbtns/topbtn'
-import { modalRename, modalShuXing } from '../../utils/modal'
+import { menuTrashSelectFile, menuCopySelectedFile, menuCreatShare, menuDownload } from '@/pan/topbtns/topbtn'
+import { modalRename, modalShuXing } from '@/utils/modal'
 import PanDAL from '../pandal'
 export default defineComponent({
   setup() {
     const handleRefresh = () => PanDAL.aShowDir('', 'refresh', false)
     const handleExpandAll = (isExpand: boolean) => PanDAL.ExpandDirAll(isExpand)
     const istree = true
-    return { istree, handleRefresh, handleExpandAll, menuCreatShare, menuTrashSelectFile, menuCopySelectedFile, modalRename, modalShuXing }
+    return {
+      istree,
+      handleRefresh,
+      handleExpandAll,
+      menuCreatShare,
+      menuTrashSelectFile,
+      menuCopySelectedFile,
+      modalRename,
+      modalShuXing,
+      menuDownload
+    }
   }
 })
 </script>
@@ -37,7 +47,7 @@ export default defineComponent({
           </a-doption>
         </template>
       </a-dsubmenu>
-      <a-doption>
+      <a-doption @click="() => menuDownload(istree)">
         <template #icon> <i class="iconfont icondownload" /> </template>
         <template #default>下载</template>
       </a-doption>

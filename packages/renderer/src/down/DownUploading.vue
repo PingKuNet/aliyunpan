@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAppStore, useKeyboardStore, KeyboardState, useMyShareStore, useUserStore, useWinStore } from '@/store'
-import useUploadingStore from '@/down/uploadingstore'
-import ShareDAL from '@/share/share/ShareDAL'
+import { useAppStore, useKeyboardStore, KeyboardState, useWinStore } from '@/store'
+import useUploadingStore from '@/down/UploadingStore'
 import { onShowRightMenu, onHideRightMenuScroll, RefreshScroll, RefreshScrollTo, TestCtrl, TestKey, TestKeyboardScroll, TestKeyboardSelect } from '@/utils/keyboardhelper'
 import { Tooltip as AntdTooltip } from 'ant-design-vue'
 import 'ant-design-vue/es/tooltip/style/css'
@@ -27,7 +26,6 @@ keyboardStore.$subscribe((_m: any, state: KeyboardState) => {
   if (TestKeyboardSelect(state.KeyDownEvent, viewlist.value, uploadingStore, null)) return
 })
 
-const handleRefresh = () => ShareDAL.aReloadMyShare(useUserStore().userID, true)
 const handleSelectAll = () => uploadingStore.mSelectAll()
 const handleOrder = (order: string) => uploadingStore.mOrderListData(order)
 const handleSelect = (shareid: string, event: any) => {

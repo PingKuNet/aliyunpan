@@ -1,7 +1,18 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 
-import { menuFavSelectFile, menuTrashSelectFile, menuCopySelectedFile, menuFileColorChange, menuCreatShare, menuJumpToDir, menuVideoXBT, menuDLNA, menuM3U8Download } from '../topbtns/topbtn'
+import {
+  menuFavSelectFile,
+  menuTrashSelectFile,
+  menuCopySelectedFile,
+  menuFileColorChange,
+  menuCreatShare,
+  menuJumpToDir,
+  menuVideoXBT,
+  menuDLNA,
+  menuM3U8Download,
+  menuDownload
+} from '@/pan/topbtns/topbtn'
 import { modalRename, modalShuXing } from '@/utils/modal'
 import { useSettingStore } from '@/store'
 
@@ -31,7 +42,22 @@ export default defineComponent({
   setup() {
     const settingStore = useSettingStore()
     const istree = false
-    return { istree, settingStore, menuCreatShare, menuFavSelectFile, menuTrashSelectFile, menuCopySelectedFile, menuFileColorChange, modalRename, modalShuXing, menuJumpToDir, menuVideoXBT, menuDLNA, menuM3U8Download }
+    return {
+      istree,
+      settingStore,
+      menuCreatShare,
+      menuFavSelectFile,
+      menuTrashSelectFile,
+      menuCopySelectedFile,
+      menuFileColorChange,
+      modalRename,
+      modalShuXing,
+      menuJumpToDir,
+      menuVideoXBT,
+      menuDLNA,
+      menuM3U8Download,
+      menuDownload
+    }
   }
 })
 </script>
@@ -39,7 +65,7 @@ export default defineComponent({
 <template>
   <a-dropdown id="rightpanmenu" class="rightmenu" :popup-visible="true" tabindex="-1" :draggable="false" style="z-index: -1; left: -200px; opacity: 0">
     <template #content>
-      <a-doption>
+      <a-doption @click="() => menuDownload(istree)">
         <template #icon> <i class="iconfont icondownload" /> </template>
         <template #default>下载</template>
       </a-doption>
