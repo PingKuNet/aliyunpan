@@ -5,6 +5,7 @@ import { GetSelectedList, GetFocusNext, SelectAll, MouseSelectOne, KeyboardSelec
 import { humanSize } from '@/utils/format'
 import message from '@/utils/message'
 import DB from '@/utils/db'
+import fs from 'fs'
 
 type Item = IStateDownFile
 type State = DownState
@@ -199,24 +200,97 @@ const useDownStore = defineStore('down', {
       return GetFocusNext(this.ListDataShow, KEY, this.ListFocusKey, position)
     },
 
-    mDeleteFiles(shareidlist: string[]) {
-      let filemap = new Set(shareidlist)
-      let ListDataRaw = this.ListDataRaw
-      let NewDataList: Item[] = []
-      for (let i = 0, maxi = ListDataRaw.length; i < maxi; i++) {
-        let item = ListDataRaw[i]
-        if (!filemap.has(item[KEY])) {
-          NewDataList.push(item)
+    /**
+     * 删除下载完成，修改为“待删除”状态，并从列表中删除 <br/>
+     * @param uploadIDList
+     */
+    mDeleteUploaded(uploadIDList: string[]) {
+      const UploadedList = this.ListDataRaw
+      const newListSelected = new Set(this.ListSelected);
+      const newList: Item[] = [];
+      for (let j = 0; j < UploadedList.length; j++) {
+        const downID = UploadedList[j].DownID;
+        if (uploadIDList.includes(downID)) {
+          UploadedList[j].Down.DownState = '待删除'
+          if (newListSelected.has(downID)) newListSelected.delete(downID);
+        } else {
+          newList.push(UploadedList[j]);
         }
       }
-      if (this.ListDataRaw.length != NewDataList.length) {
-        this.ListDataRaw = NewDataList
-        this.mRefreshListDataShow(true)
-      }
+      this.ListDataRaw = newList;
+      this.ListSelected = newListSelected;
+      DB.deleteDowneds(uploadIDList)
+      this.mRefreshListDataShow(true)
     },
 
+    /**
+     * 删除全部
+     */
+    mDeleteAllUploaded() {
+      this.ListSelected = new Set<string>()
+      this.ListDataRaw.splice(0, this.ListDataRaw.length)
+      DB.deleteDownedAll()
+      this.mRefreshListDataShow(true)
+    },
 
+    /**
+     * 打开下载完成的文件 <br/>
+     * file 和 downIDList 二选一
+     * @param file
+     * @param downIDList
+     * @param isDir 是否打开目录
+     */
+    mOpenUploadedFile(file: Item | null, downIDList: string[], isDir: boolean) {
+      const DownedList = this.ListDataRaw
 
+      const openDir = (localFilePath: string) => {
+        try {
+          if (fs.existsSync(localFilePath)) {
+            window.Electron.shell.showItemInFolder(localFilePath)
+          } else {
+            message.error('文件夹可能已经被删除')
+          }
+        } catch {
+        }
+      }
+
+      const openFile = (localFilePath: string) => {
+        try {
+          if (fs.existsSync(localFilePath)) {
+            window.Electron.shell.openPath(localFilePath)
+          } else {
+            message.error('文件可能已经被删除')
+          }
+        } catch {
+        }
+      }
+
+      if (file) {
+        if (isDir) {
+          openDir(file.Info.DownSavePath)
+        } else {
+          openFile(file.Info.DownSavePath)
+        }
+        return
+      }
+
+      let opDownIDList = downIDList;
+      if (downIDList.length > 10) {
+        message.info('选择的数量大于10个，已经为你优化打开前10个',10)
+        opDownIDList = downIDList.slice(0,10)
+      }
+      for (let j = 0; j < DownedList.length; j++) {
+        const downID = DownedList[j].DownID;
+        if (opDownIDList.includes(downID)) {
+          const localFilePath = DownedList[j].Info.DownSavePath;
+          if (isDir) {
+            openDir(localFilePath)
+          } else {
+            openFile(localFilePath)
+          }
+        }
+      }
+    },
 
   }
 })

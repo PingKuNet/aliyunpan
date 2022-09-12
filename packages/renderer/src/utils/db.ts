@@ -187,6 +187,10 @@ class XBYDB3 extends Dexie {
     if (!this.isOpen()) await this.open().catch(() => {})
     return this.idowned.delete(key)
   }
+  async deleteDowneds(keys: string[]) {
+    if (!this.isOpen()) await this.open().catch(() => {})
+    return this.idowned.bulkDelete(keys)
+  }
   async saveDowned(key: string, value: IStateDownFile) {
     if (!this.isOpen()) await this.open().catch(() => {})
     return this.idowned.put(value, key).catch(() => {})

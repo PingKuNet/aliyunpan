@@ -24,7 +24,7 @@ import type { FollowingState } from '@/share/following/OtherFollowingStore'
 
 import useUploadingStore from '@/down/UploadingStore'
 import useUploadedStore from '@/down/UploadedStore'
-import useDownStore from '@/down/DownStore'
+import useDownedStore from '@/down/DownedStore'
 import useDowningStore from '@/down/DowningStore'
 
 import useFootStore from './footstore'
@@ -58,6 +58,6 @@ export {
   useUploadingStore,
   useUploadedStore,
   useDowningStore,
-  useDownStore
+  useDownedStore
 }
 export default pinia

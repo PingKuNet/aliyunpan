@@ -5,7 +5,7 @@ import { GetSelectedList, GetFocusNext, SelectAll, MouseSelectOne, KeyboardSelec
 import { humanSize } from '@/utils/format'
 import message from '@/utils/message'
 import DB from '@/utils/db'
-import { useDownStore } from '@/store'
+import { useDownedStore } from '@/store'
 import { AriaDeleteList, AriaStopList } from '@/utils/aria2c'
 
 type Item = IStateDownFile
@@ -434,8 +434,8 @@ const useDowningStore = defineStore('downing', {
           DB.deleteDowning(item.DownID)
           item.Down.DownTime = Date.now()
           item.DownID = item.Down.DownTime.toString() + '_' + item.DownID
-          useDownStore().ListDataRaw.splice(0, 0, item)
-          useDownStore().mRefreshListDataShow(true)
+          useDownedStore().ListDataRaw.splice(0, 0, item)
+          useDownedStore().mRefreshListDataShow(true)
           DB.saveDowned(item.DownID, JSON.parse(JSON.stringify(item)))
           break;
         }

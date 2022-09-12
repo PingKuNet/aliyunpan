@@ -1,7 +1,7 @@
 import { IAliGetFileModel } from '@/aliapi/alimodels'
 import path from 'path'
 import TreeStore from '@/store/treestore'
-import { useUserStore, useSettingStore, useDownStore, useDowningStore } from '@/store'
+import { useUserStore, useSettingStore, useDownedStore, useDowningStore } from '@/store'
 import { ClearFileName } from '@/utils/utils'
 import DB from '@/utils/db'
 import useUploadedStore from '@/down/UploadedStore'
@@ -85,9 +85,9 @@ export default class DownDAL {
    * 从DB中加载数据
    */
   static async aLoadDownedFromDB() {
-    const downStore = useDownStore()
-    downStore.ListDataRaw = await DB.getDownedAll()
-    downStore.mRefreshListDataShow(true)
+    const downedStore = useDownedStore()
+    downedStore.ListDataRaw = await DB.getDownedAll()
+    downedStore.mRefreshListDataShow(true)
   }
 
   /**
@@ -312,7 +312,7 @@ export default class DownDAL {
       }
     }
     downingStore.mRefreshListDataShow(true)
-    useDownStore().mRefreshListDataShow(true)
+    useDownedStore().mRefreshListDataShow(true)
   }
 
   /**
