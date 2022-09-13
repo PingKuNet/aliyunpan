@@ -5,7 +5,7 @@ declare global {
     require:any,
     Electron: any
     openDatabase: any
-    WebRelaunchAria: any
+    WebRelaunchAria: () => Promise<number>
     platform: string
     WinMsg: any
     WinMsgToMain: any

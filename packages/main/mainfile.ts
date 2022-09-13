@@ -8,10 +8,10 @@ let NewCopyed = false
 let NewSaved = false
 export function getAsarPath(filename: string) {
   if (DEBUGGING) {
-    let basePath = path.resolve(app.getAppPath()) 
+    let basePath = path.resolve(app.getAppPath())
     return path.join(basePath, filename)
   } else {
-    let basePath = path.resolve(app.getAppPath()) 
+    let basePath = path.resolve(app.getAppPath())
     let baseNew = path.join(basePath, '..', 'app.new')
     let baseSave = path.join(basePath, '..', 'default_app.asar')
     if (NewCopyed == false) {
@@ -34,13 +34,13 @@ export function getAsarPath(filename: string) {
 
 export function getResourcesPath(filename: string) {
   if (DEBUGGING) {
-    let basePath = path.resolve(app.getAppPath()) 
+    let basePath = path.resolve(app.getAppPath())
     return path.join(basePath, filename)
   } else {
-    let basePath = path.resolve(app.getAppPath(), '..') 
+    let basePath = path.resolve(app.getAppPath(), '..')
 
     if (filename == 'app.ico' && process.platform !== 'win32') {
-      filename = 'app.png' 
+      filename = 'app.png'
     }
 
     if (filename == 'app.ico') {
@@ -68,10 +68,10 @@ export function getResourcesPath(filename: string) {
 }
 export function getCrxPath() {
   if (DEBUGGING) {
-    let basePath = path.resolve(app.getAppPath()) 
+    let basePath = path.resolve(app.getAppPath())
     return path.join(basePath, 'crx')
   } else {
-    let basePath = path.resolve(app.getAppPath(), '..') 
+    let basePath = path.resolve(app.getAppPath(), '..')
     basePath = path.join(basePath, 'crx')
     try {
       if (!existsSync(basePath)) mkdirSync(basePath)
@@ -146,7 +146,7 @@ const ariaconf = `# debug, info, notice, warn or error
  enable-rpc=true
  rpc-allow-origin-all=true
  rpc-listen-all=false
- rpc-listen-port=29387
+ rpc-listen-port=16800
  rpc-secret=S4znWTaZYQi3cpRNb
  rpc-secure=false
  pause-metadata=true

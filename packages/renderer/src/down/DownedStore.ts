@@ -6,6 +6,7 @@ import { humanSize } from '@/utils/format'
 import message from '@/utils/message'
 import DB from '@/utils/db'
 import fs from 'fs'
+import path from 'path'
 
 type Item = IStateDownFile
 type State = DownState
@@ -266,10 +267,15 @@ const useDownStore = defineStore('down', {
       }
 
       if (file) {
+        if (file.Info.ariaRemote) {
+          message.error('远程下载不支持该操作')
+          return
+        }
+        const localFilePath = path.join(file.Info.DownSavePath, file.Info.name)
         if (isDir) {
-          openDir(file.Info.DownSavePath)
+          openDir(localFilePath)
         } else {
-          openFile(file.Info.DownSavePath)
+          openFile(localFilePath)
         }
         return
       }
@@ -280,9 +286,13 @@ const useDownStore = defineStore('down', {
         opDownIDList = downIDList.slice(0,10)
       }
       for (let j = 0; j < DownedList.length; j++) {
-        const downID = DownedList[j].DownID;
+        const downID = DownedList[j].DownID
         if (opDownIDList.includes(downID)) {
-          const localFilePath = DownedList[j].Info.DownSavePath;
+          if (DownedList[j].Info.ariaRemote) {
+            message.error('远程下载不支持该操作')
+            continue
+          }
+          const localFilePath = path.join(DownedList[j].Info.DownSavePath, DownedList[j].Info.name)
           if (isDir) {
             openDir(localFilePath)
           } else {

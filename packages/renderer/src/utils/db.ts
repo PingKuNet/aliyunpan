@@ -27,7 +27,7 @@ class XBYDB3 extends Dexie {
   constructor() {
     super('XBYDB3')
 
-    this.version(8)
+    this.version(9)
       .stores({
         iobject: '',
         istring: '',
@@ -37,7 +37,7 @@ class XBYDB3 extends Dexie {
         itoken: 'user_id',
         iothershare: 'share_id',
         idowning: 'DownID, Info.drive_id, Info.user_id',
-        idowned: 'DownID, Info.drive_id, Info.user_id',
+        idowned: 'DownID, Info.drive_id, Info.user_id, Down.DownTime',
         iuploading: 'UploadID, Info.drive_id, Info.user_id',
         iuploaded: 'UploadID, Info.drive_id, Info.user_id, Upload.DownTime',
         ifilehash: ''
@@ -180,7 +180,7 @@ class XBYDB3 extends Dexie {
   }
   async getDownedAll(): Promise<IStateDownFile[]> {
     if (!this.isOpen()) await this.open().catch(() => {})
-    const list = await this.idowned.where('Info.user_id').equals(useUserStore().userID).toArray()
+    const list = await this.idowned.where('Info.user_id').equals(useUserStore().userID).reverse().toArray()
     return list
   }
   async deleteDowned(key: string) {

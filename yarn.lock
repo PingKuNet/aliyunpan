@@ -933,18 +933,10 @@ argparse@^2.0.1:
   resolved "https://registry.npmmirror.com/argparse/-/argparse-2.0.1.tgz#246f50f3ca78a3240f6c997e8a9bd1eac49e4b38"
   integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
 
-aria2-lib@^1.0.1:
+aria2-lib@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmmirror.com/aria2-lib/-/aria2-lib-1.0.1.tgz#a65cd35b43febf42312306ea86cdcc4979d1f13c"
   integrity sha512-+kzXnMUEm1qANHkTmMjn4sWv9Bpc+DGSPbUHpAKFVdVgfZcT5kLsh2SGF+6j7NsXwkRfH8NDhkFtNQpZ4qSYZQ==
-
-aria2@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.npmmirror.com/aria2/-/aria2-4.1.2.tgz#0ecbc50beea82856c88b4de71dac336154f67362"
-  integrity sha512-qTBr2RY8RZQmiUmbj2KXFvkErNxU4aTHZszszzwhE8svy2PEVX+IYR/c4Rp9Tuw4QkeU8cylGy6McV6Yl8i7Qw==
-  dependencies:
-    node-fetch "^2.6.1"
-    ws "^7.4.0"
 
 array-tree-filter@^2.1.0:
   version "2.1.0"
@@ -3344,11 +3336,6 @@ write-file-atomic@^3.0.0:
     is-typedarray "^1.0.0"
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
-
-ws@^7.4.0:
-  version "7.5.9"
-  resolved "https://registry.npmmirror.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
-  integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
 
 xdg-basedir@^4.0.0:
   version "4.0.0"

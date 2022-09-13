@@ -17,7 +17,6 @@ import fs from 'fs'
 
 const localPwd = 'S4znWTaZYQi3cpRNb'
 
-
 let Aria2cChangeing: boolean = false
 let Aria2EngineLocal: Aria2 | undefined = undefined
 let Aria2EngineRemote: Aria2 | undefined = undefined
@@ -40,13 +39,13 @@ function SetAriaOnline(isOnline: boolean, ariaState: string = '') {
   let doc = document.getElementById('footAria')
   if (ariaState == 'local') {
     IsAria2cOnlineLocal = isOnline
-    if (doc && doc.innerText != '') doc.innerText = ''
-    /*if (isOnline) {
-      let txt = 'Aria ⚯ localhost'
+    /*if (doc && doc.innerText != '') doc.innerText = ''*/
+    if (isOnline) {
+      let txt = 'Aria ⚯ Local'
       if (doc && doc.innerText != txt) doc.innerText = txt
     } else {
       if (doc && doc.innerText != 'Aria 已断开') doc.innerText = 'Aria 已断开'
-    }*/
+    }
   } else {
     IsAria2cOnlineRemote = isOnline
     if (isOnline) {
@@ -59,7 +58,6 @@ function SetAriaOnline(isOnline: boolean, ariaState: string = '') {
 }
 
 function CloseRemote() {
-  
   if (IsAria2cOnlineRemote) {
     IsAria2cOnlineRemote = false
     if (Aria2EngineRemote) {
@@ -172,20 +170,12 @@ export async function AriaChangeToRemote() {
 
 
 export async function AriaChangeToLocal() {
-  await Sleep(1000)
   CloseRemote()
-  SetAriaOnline(true, 'local')
-  /*try {
-    
+  try {
     if (Aria2EngineLocal == undefined) {
-      const Aria2FC = Aria2.default ? Aria2.default : Aria2
-      Aria2EngineLocal = new Aria2FC({
-        host: 'localhost',
-        port: 29387,
-        secure: false,
-        secret: localPwd,
-        path: '/jsonrpc'
-      })
+      const port = window.WebRelaunchAria ? await window.WebRelaunchAria() : 16800
+      const options = { host: '127.0.0.1', port, secure: false, secret: localPwd, path: '/jsonrpc' }
+      Aria2EngineLocal = new Aria2({ WebSocket: global.WebSocket, fetch: global.fetch, ...options })
       Aria2EngineLocal.on('close', () => {
         IsAria2cOnlineLocal = false
         if (useSettingStore().AriaIsLocal) {
@@ -206,12 +196,11 @@ export async function AriaChangeToLocal() {
         Aria2cLocalRelanchTime++
         if (Aria2cLocalRelanchTime < 2) {
           message.info('正在尝试重启Aria进程中。。。')
-          if (window.WebRelaunchAria) window.WebRelaunchAria()
         }
       })
-    
+
     if (!IsAria2cOnlineLocal) {
-      const url = 'localhost:29387 secret=' + localPwd
+      const url = '127.0.0.1:16800 secret=' + localPwd
       if (Aria2cLocalRelanchTime < 2) message.error('无法连接到本地Aria2 ' + url)
     } else {
       const settingStore = useSettingStore()
@@ -221,9 +210,10 @@ export async function AriaChangeToLocal() {
         IsAria2cOnlineLocal = false
       })
     }
+    await Sleep(1000)
   } catch (e) {
     SetAriaOnline(false, 'local')
-  }*/
+  }
   return true
 }
 
@@ -317,10 +307,10 @@ export async function AriaAddUrl(file: IStateDownFile): Promise<string> {
     const token = UserDAL.GetUserToken(info.user_id)
     if (!token || !token.access_token) return '账号失效，操作取消'
     if (info.isDir) {
-      
+
       const dirfull = path.join(info.DownSavePath, info.name)
       if (!info.ariaRemote) {
-        
+
         await fsPromises.mkdir(dirfull, { recursive: true }).catch((e: any) => {
           if (e.code && e.code === 'EPERM') e = '没有权限'
           if (e.code && e.code === 'EBUSY') e = '文件夹被占用或锁定中'
@@ -330,7 +320,7 @@ export async function AriaAddUrl(file: IStateDownFile): Promise<string> {
           return undefined
         })
       }
-      
+
       const dir: IAliFileResp = {
         items: [],
         itemsKey:new Set(),
@@ -344,7 +334,7 @@ export async function AriaAddUrl(file: IStateDownFile): Promise<string> {
       do {
         const isGet = await AliTrash.ApiFileListOnePageAria('name', 'ASC', dir)
         if (!isGet) {
-          return '解析子文件列表失败，稍后重试' 
+          return '解析子文件列表失败，稍后重试'
         } else {
           if (file.Down.IsStop) {
             dir.items.length = 0
@@ -357,7 +347,7 @@ export async function AriaAddUrl(file: IStateDownFile): Promise<string> {
 
       return 'downed'
     } else {
-      
+
       const dir = info.DownSavePath
       const out = info.ariaRemote ? info.name : info.name + '.td'
       const filefull = path.join(dir, info.name)
@@ -372,7 +362,7 @@ export async function AriaAddUrl(file: IStateDownFile): Promise<string> {
           if (e.message) e = e.message
           if (typeof e == 'string' && e.indexOf('EACCES') >= 0) e = '文件没有读取权限'
           if (typeof e == 'string' && e.indexOf('no such file') >= 0) {
-            
+
           } else {
             DebugLog.mSaveLog('danger', 'AriaAddUrl访问文件失败：' + filefull + ' ' + (e || ''))
             return e
@@ -381,7 +371,7 @@ export async function AriaAddUrl(file: IStateDownFile): Promise<string> {
 
         if (info.size == 0) {
           try {
-            
+
             await (await fsPromises.open(filefull, 'w')).close().catch((e: any) => {
               return undefined
             })
@@ -391,17 +381,17 @@ export async function AriaAddUrl(file: IStateDownFile): Promise<string> {
           }
         }
       }
-      
+
 
       let downurl = file.Down.DownUrl
-      
+
       if (downurl != '' && downurl.indexOf('x-oss-expires=') > 0) {
-        
+
         let expires = downurl.substr(downurl.indexOf('x-oss-expires=') + 'x-oss-expires='.length)
         expires = expires.substr(0, expires.indexOf('&'))
-        const lasttime = parseInt(expires) - Date.now() / 1000 
-        const needtime = (info.size + 1) / 1024 / 1024 
-        if (lasttime < 60 || lasttime < needtime + 60) downurl = '' 
+        const lasttime = parseInt(expires) - Date.now() / 1000
+        const needtime = (info.size + 1) / 1024 / 1024
+        if (lasttime < 60 || lasttime < needtime + 60) downurl = ''
       } else downurl = ''
 
       if (!downurl) {
@@ -417,8 +407,7 @@ export async function AriaAddUrl(file: IStateDownFile): Promise<string> {
       if (!downurl) return '生成下载链接失败0'
       if (file.Down.IsStop) return '已暂停'
 
-      
-      const split = useSettingStore().downThreadMax 
+      const split = useSettingStore().downThreadMax
       const referer = Config.referer
       const userAgent = Config.userAgent
       const multicall = [
@@ -469,7 +458,7 @@ export function AriaHashFile(downitem: IStateDownFile): { DownID: string; Check:
       }
     }
   }
-  return { DownID, Check: success } 
+  return { DownID, Check: success }
 }
 
 

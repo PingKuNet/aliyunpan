@@ -1,11 +1,25 @@
 import { getAsarPath, getCrxPath, getResourcesPath, getUserDataPath, mkAriaConf } from './mainfile'
 import { release } from 'os'
-import { app, BrowserWindow, dialog, Menu, MenuItem, Tray, ipcMain, shell, nativeTheme, session, net, screen } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  Menu,
+  MenuItem,
+  nativeTheme,
+  screen,
+  session,
+  shell,
+  Tray
+} from 'electron'
 import remote from '@electron/remote/main'
-remote.initialize()
 import { exec, spawn, SpawnOptions } from 'child_process'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
+import { portIsOccupied } from './utils'
+
+remote.initialize()
 
 app.commandLine.appendSwitch('no-sandbox')
 app.commandLine.appendSwitch('disable-web-security')
@@ -72,11 +86,11 @@ process.on('uncaughtException', (err) => {
 })
 
 function createWindow() {
-  Menu.setApplicationMenu(null) 
+  Menu.setApplicationMenu(null)
   let winWidth = 0
   let winHeight = 0
   let bgcolor = '#ffffff'
-  
+
   try {
     const configjson = getUserDataPath('config.json')
     if (existsSync(configjson)) {
@@ -95,13 +109,13 @@ function createWindow() {
   if (winWidth <= 0) {
     winWidth = 680
     winHeight = 500
-    
+
     try {
       let size = screen.getPrimaryDisplay().workAreaSize
       let width = size.width * 0.677
       let height = size.height * 0.866
       if (width > winWidth) winWidth = width
-      if (size.width >= 970 && width < 970) width = 970 
+      if (size.width >= 970 && width < 970) width = 970
       if (winWidth > 1080) winWidth = 1080
       if (height > winHeight) winHeight = height
       if (winHeight > 720) winHeight = 720
@@ -168,7 +182,7 @@ function createWindow() {
     debounce(function () {
       try {
         if (mainWindow && mainWindow.isMaximized() == false && mainWindow.isMinimized() == false && mainWindow.isFullScreen() == false) {
-          let s = mainWindow!.getSize() 
+          let s = mainWindow!.getSize()
           const configjson = getUserDataPath('config.json')
           writeFileSync(configjson, `{"width":${s[0].toString()},"height": ${s[1].toString()}}`, 'utf-8')
         }
@@ -203,11 +217,12 @@ function createWindow() {
   })
   mainWindow.webContents.on('did-create-window', (childWindow) => {
     if (process.platform === 'win32') {
-      childWindow.setMenu(null) 
+      childWindow.setMenu(null)
     }
   })
 
   creatWorker()
+
 }
 
 function creatWorker() {
@@ -273,10 +288,10 @@ function creatWorker() {
   })
 }
 
-function creatAria() {
+async function creatAria() {
   try {
-    let basePath = path.resolve(app.getAppPath(), '..') 
-    if (DEBUGGING) basePath = path.resolve(app.getAppPath(), '..') 
+    let basePath = path.resolve(app.getAppPath(), '..')
+    if (DEBUGGING) basePath = path.resolve(app.getAppPath(), '..')
     let ariaPath = ''
     if (process.platform === 'win32') {
       ariaPath = 'aria2c.exe'
@@ -286,16 +301,17 @@ function creatAria() {
       ariaPath = 'aria2c'
     }
     let ariaPath2 = path.join(basePath, ariaPath)
-    if (existsSync(ariaPath2) == false) {
+    if (!existsSync(ariaPath2)) {
       ShowError('找不到Aria程序文件', ariaPath2)
-      return
+      return 0
     }
 
     let confPath = path.join(basePath, 'aria2.conf')
-    if (existsSync(confPath) == false) mkAriaConf(confPath)
+    if (!existsSync(confPath)) mkAriaConf(confPath)
 
     process.chdir(basePath)
     const options:SpawnOptions = { detached: true, stdio: 'ignore', cwd: basePath }
+    const port = await portIsOccupied(16800)
     const subprocess = spawn(
       ariaPath,
       [
@@ -304,7 +320,7 @@ function creatAria() {
         '--enable-rpc=true',
         '--rpc-allow-origin-all=true',
         '--rpc-listen-all=false',
-        '--rpc-listen-port=29387',
+        '--rpc-listen-port=' + port,
         '--rpc-secret=S4znWTaZYQi3cpRNb',
         '--rpc-secure=false',
         '--auto-file-renaming=false',
@@ -314,10 +330,13 @@ function creatAria() {
       ],
       options
     )
-    subprocess.unref()
+
+    // subprocess.unref()
+    return port
   } catch (e: any) {
     console.log(e)
   }
+  return 0
 }
 
 let timer: NodeJS.Timeout | null = null
@@ -348,7 +367,7 @@ app.on('will-quit', () => {
       appTray = null
     }
   } catch {
-    
+
   }
 })
 
@@ -356,7 +375,7 @@ app.on('will-quit', () => {
 var appTray: Electron.Tray | null = null
 
 function createTray() {
-  
+
   var trayMenuTemplate = [
     {
       label: '显示主界面',
@@ -382,14 +401,14 @@ function createTray() {
     }
   ]
 
-  
+
   let icon = getResourcesPath('app.ico')
   appTray = new Tray(icon)
-  
+
   const contextMenu = Menu.buildFromTemplate(trayMenuTemplate)
-  
+
   appTray.setToolTip('阿里云盘小白羊版')
-  
+
   appTray.setContextMenu(contextMenu)
 
   appTray.on('click', () => {
@@ -485,7 +504,7 @@ app
   */
   .then(() => {
     session.defaultSession.webRequest.onBeforeSendHeaders((details, cb) => {
-      
+
       const should115referer = details.url.indexOf('.115.com') > 0
       const shouldgieereferer = details.url.indexOf('gitee.com') > 0
       const shouldaliOrigin = details.url.indexOf('.aliyundrive.com') > 0
@@ -493,7 +512,7 @@ app
       const shouldaliReferer = should115referer == false && shouldgieereferer == false && (details.referrer == undefined || details.referrer.trim() === '' || /(\/localhost:)|(^file:\/\/)|(\/127.0.0.1:)/.exec(details.referrer) !== null)
       const shouldtoken = details.url.indexOf('/file/download?') > 0
 
-      
+
       cb({
         cancel: false,
         requestHeaders: {
@@ -616,7 +635,7 @@ ipcMain.on('WebShowItemInFolder', (event, fullpath) => {
   if (fullpath.length > 2) shell.showItemInFolder(fullpath)
 })
 ipcMain.on('WebPlatformSync', (event) => {
-  let basePath = path.resolve(app.getAppPath(), '..') 
+  let basePath = path.resolve(app.getAppPath(), '..')
   let findMPV = process.platform !== 'win32' || existsSync(path.join(basePath, 'MPV', 'mpv.exe'))
   let appPath = app.getPath('userData')
   event.returnValue = {
@@ -637,12 +656,12 @@ ipcMain.on('WebSpawnSync', (event, data) => {
     options.stdio = 'ignore'
     if (data.command === 'potplayer') {
       if (process.platform === 'win32') {
-        let basePath = path.resolve(app.getAppPath(), '..') 
+        let basePath = path.resolve(app.getAppPath(), '..')
         data.command = path.join(basePath, 'PotPlayer', 'PotPlayer.exe')
       }
     }
     if (data.command === 'mpv') {
-      let basePath = path.resolve(app.getAppPath(), '..') 
+      let basePath = path.resolve(app.getAppPath(), '..')
       if (process.platform === 'win32') {
         data.command = path.join(basePath, 'MPV', 'mpv.exe')
       } else if (process.platform === 'darwin') {
@@ -674,7 +693,7 @@ ipcMain.on('WebExecSync', (event, data) => {
   try {
     let cmdarguments = []
     if (data.command === 'mpv') {
-      let basePath = path.resolve(app.getAppPath(), '..') 
+      let basePath = path.resolve(app.getAppPath(), '..')
       if (process.platform === 'win32') {
         const exe = path.join(basePath, 'MPV', 'mpv.exe')
         if (existsSync(exe) == false) {
@@ -701,7 +720,7 @@ ipcMain.on('WebExecSync', (event, data) => {
     if (data.args) cmdarguments.push(...data.args)
 
     const finalcmd = cmdarguments.join(' ')
-    
+
     exec(finalcmd, (err: any) => {
       event.returnValue = err
     })
@@ -750,12 +769,8 @@ ipcMain.on('WebRelaunch', (event, data) => {
   } catch {}
 })
 
-ipcMain.on('WebRelaunchAria', (event, data) => {
-  debounce(function () {
-    try {
-      creatAria()
-    } catch {}
-  }, 2000)
+ipcMain.handle('WebRelaunchAria', async (event, data) => {
+  return await creatAria()
 })
 
 ipcMain.on('WebSetProgressBar', (event, data) => {
@@ -795,17 +810,17 @@ ipcMain.on('WebShutDown', (event, data) => {
       if (data.sudo) {
         cmdarguments.unshift('sudo')
       }
-      cmdarguments.push('-h') 
+      cmdarguments.push('-h')
       cmdarguments.push('now')
     }
     if (process.platform === 'win32') {
-      cmdarguments.push('-s') 
+      cmdarguments.push('-s')
       cmdarguments.push('-f')
-      cmdarguments.push('-t 0') 
+      cmdarguments.push('-t 0')
     }
 
     const finalcmd = cmdarguments.join(' ')
-    
+
     exec(finalcmd, (err: any) => {
       if (data.quitapp) {
         try {
@@ -881,7 +896,7 @@ ipcMain.on('WebOpenWindow', (event, data) => {
 
   win.webContents.on('did-create-window', (childWindow) => {
     if (process.platform === 'win32') {
-      childWindow.setMenu(null) 
+      childWindow.setMenu(null)
     }
   })
 })
@@ -927,3 +942,5 @@ ipcMain.on('WebOpenUrl', (event, data) => {
     win.show()
   })
 })
+
+

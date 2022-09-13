@@ -30,12 +30,12 @@ window.WebToElectron = function (data: any) {
 window.WebToElectronCB = function (data: any, callback: any) {
   try {
     const backdata = ipcRenderer.sendSync('WebToElectronCB', data)
-    callback(backdata) 
+    callback(backdata)
   } catch {}
 }
 
 ipcRenderer.on('ElectronToWeb', function (event, arg) {
-  
+
 })
 ipcRenderer.on('MainSendToken', function (event, arg) {
   try {
@@ -45,27 +45,27 @@ ipcRenderer.on('MainSendToken', function (event, arg) {
 
 window.WebSpawnSync = function (data: any, callback: any) {
   try {
-    const backdata = ipcRenderer.sendSync('WebSpawnSync', data) 
-    callback(backdata) 
+    const backdata = ipcRenderer.sendSync('WebSpawnSync', data)
+    callback(backdata)
   } catch {}
 }
 window.WebExecSync = function (data: any, callback: any) {
   try {
-    const backdata = ipcRenderer.sendSync('WebExecSync', data) 
-    callback(backdata) 
+    const backdata = ipcRenderer.sendSync('WebExecSync', data)
+    callback(backdata)
   } catch {}
 }
 window.WebShowOpenDialogSync = function (config: any, callback: any) {
   try {
     const backdata = ipcRenderer.sendSync('WebShowOpenDialogSync', config)
-    callback(backdata) 
+    callback(backdata)
   } catch {}
 }
 
 window.WebShowSaveDialogSync = function (config: any, callback: any) {
   try {
     const backdata = ipcRenderer.sendSync('WebShowSaveDialogSync', config)
-    callback(backdata) 
+    callback(backdata)
   } catch {}
 }
 window.WebShowItemInFolder = function (fullpath: string) {
@@ -77,7 +77,7 @@ window.WebShowItemInFolder = function (fullpath: string) {
 window.WebPlatformSync = function (callback: any) {
   try {
     const backdata = ipcRenderer.sendSync('WebPlatformSync')
-    callback(backdata) 
+    callback(backdata)
   } catch {}
 }
 
@@ -112,35 +112,37 @@ window.WebRelaunch = function (data: any) {
     ipcRenderer.send('WebRelaunch', data)
   } catch {}
 }
-window.WebRelaunchAria = function () {
+window.WebRelaunchAria = async function() {
   try {
-    ipcRenderer.send('WebRelaunchAria')
-  } catch {}
+    return await ipcRenderer.invoke('WebRelaunchAria')
+  } catch {
+    return 0
+  }
 }
 window.WebSetProgressBar = function (data: any) {
   try {
-    ipcRenderer.send('WebSetProgressBar', data) 
+    ipcRenderer.send('WebSetProgressBar', data)
   } catch {}
 }
 window.WebSetCookies = function (cookies: any) {
   try {
-    ipcRenderer.send('WebSetCookies', cookies) 
+    ipcRenderer.send('WebSetCookies', cookies)
   } catch {}
 }
 
 window.WebOpenWindow = function (data: any) {
   try {
-    ipcRenderer.send('WebOpenWindow', data) 
+    ipcRenderer.send('WebOpenWindow', data)
   } catch {}
 }
 window.WebOpenUrl = function (data: any) {
   try {
-    ipcRenderer.send('WebOpenUrl', data) 
+    ipcRenderer.send('WebOpenUrl', data)
   } catch {}
 }
 window.WebShutDown = function (data: any) {
   try {
-    ipcRenderer.send('WebShutDown', data) 
+    ipcRenderer.send('WebShutDown', data)
   } catch {}
 }
 
@@ -153,7 +155,7 @@ function createRightMenu() {
         if (isEleEditable(e.target)) {
           ipcRenderer.send('WebToElectron', { cmd: 'menuedit' })
         } else {
-          
+
           let selectText = window.getSelection()?.toString()
           if (!!selectText) ipcRenderer.send('WebToElectron', { cmd: 'menucopy' })
         }
@@ -178,11 +180,11 @@ function isEleEditable(e: any): boolean {
   if (!e) {
     return false
   }
-  
+
   if ((e.tagName === 'INPUT' && e.type !== 'checkbox') || e.tagName === 'TEXTAREA' || e.contentEditable == 'true') {
     return true
   } else {
-    
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return isEleEditable(e.parentNode)
   }

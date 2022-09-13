@@ -25,7 +25,7 @@ declare interface Window {
   WebReload: any
   WebRelaunch: any
   WebRelaunchAria: any
-  WebSetProgressBar: any
+  WebSetProgressBar: () => Promise<number>
   WebSetCookies: any
   WebOpenWindow: any
   WebShutDown: any
