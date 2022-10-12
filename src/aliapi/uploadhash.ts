@@ -3,10 +3,10 @@ import { IUploadingUI } from '../utils/dbupload'
 import { OpenFileHandle } from '../utils/filehelper'
 import DBCache from '../utils/dbcache'
 
-const fspromises = window.require('fs/promises')
-const crypto = window.require('crypto')
+import fspromises from 'fs/promises'
+import crypto from 'crypto'
 
-const os = window.require('os')
+import os  from 'os'
 
 const CPU = Math.min(8, Math.max(4, os.cpus().length / 2))
 

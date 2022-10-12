@@ -1,3 +1,5 @@
+import path from 'path'
+
 export function getFromClipboard() {
   return window.Electron.clipboard.readText() as string
 }
@@ -10,15 +12,15 @@ export function openExternal(url: string) {
 }
 
 const ElectronPath = {
-  
+
   AppUserData: '',
-  
+
   AppResourcesPath: '',
-  
+
   AppPlatform: '',
-  
+
   AppArch: '',
-  
+
   AppExecPath: '',
 
   AppUserName: '',
@@ -50,7 +52,7 @@ export function getUserData() {
   LoadElectronPath()
   return ElectronPath.AppUserData
 }
-const path = window.require('path')
+
 export function getResourcesPath(filename: string) {
   try {
     LoadElectronPath()

@@ -19,7 +19,13 @@ export default defineConfig({
     }
   },
   plugins: [
-    vue(),
+    vue({
+      template:{
+        compilerOptions:{
+          isCustomElement: tag => tag == 'Webview'
+        }
+      }
+    }),
     electron({
       main: {
         entry: 'electron/main/index.ts',

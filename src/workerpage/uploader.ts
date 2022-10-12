@@ -7,10 +7,10 @@ import { useSettingStore } from '../store'
 import DB from '../utils/db'
 import DBUpload, { IUploadingUI } from '../utils/dbupload'
 import DebugLog from '../utils/debuglog'
-const fspromises = window.require('fs/promises')
+import fspromises from 'fs/promises'
 
 export async function StartUpload(item: IUploadingUI) {
-  
+
   const token = await DB.getUser(item.Task.user_id)
   if (token == undefined || token.user_id !== item.Task.user_id) {
     item.Info.UploadState = 'error'
@@ -19,7 +19,7 @@ export async function StartUpload(item: IUploadingUI) {
     return
   }
   let expire_time = new Date(token.expire_time).getTime()
-  
+
   if (expire_time - new Date().getTime() < 60000) {
     item.Info.UploadState = 'error'
     item.Info.FailedCode = 402
@@ -27,10 +27,10 @@ export async function StartUpload(item: IUploadingUI) {
     return
   }
 
-  
+
   if (item.Task.IsDir) return creatDir(item)
 
-  
+
   await checkFileSize(item)
 
   const uploadinfo: IUploadInfo = {
@@ -43,25 +43,25 @@ export async function StartUpload(item: IUploadingUI) {
   }
 
   if (item.Info.up_upload_id != '' && item.Info.up_file_id != '') {
-    
+
     await reloadUploadUrl(uploadinfo, item).catch(() => {})
   }
 
   if (item.Info.up_upload_id == '') {
-    
+
     const needupload = await checkPreHashAndGetPartlist(uploadinfo, item)
     if (!needupload) return
   }
 
   if (useSettingStore().downUploadBreakFile) {
-    
+
     item.Info.UploadState = 'error'
     item.Info.FailedCode = 505
     item.Info.FailedMessage = '跳过不能秒传的文件'
     return
   }
 
-  
+
   if (item.Info.UploadState == 'error') return
 
   if (uploadinfo.part_info_list.length == 0) {
@@ -71,13 +71,13 @@ export async function StartUpload(item: IUploadingUI) {
     return
   }
 
-  
+
   DBUpload.saveUploadInfo(item.Info)
 
-  
+
   const UpResult = await AliUploadDisk.UploadOneFile(uploadinfo, item)
 
-  
+
   if (UpResult == 'success') {
     item.Info.UploadState = 'success'
   } else if (!item.IsRunning) {
@@ -90,22 +90,22 @@ export async function StartUpload(item: IUploadingUI) {
     item.Info.FailedMessage = UpResult
   } else {
     console.log(item.Info.UploadState, item.Info)
-    
+
   }
 }
 
 async function creatDir(item: IUploadingUI) {
-  
+
   let data = await AliFileCmd.ApiCreatNewForder(item.Task.user_id, item.Task.drive_id, item.Task.parent_id, item.Task.name)
-  
+
   if (data.error) {
     item.Info.UploadState = 'error'
     item.Info.FailedCode = 503
     item.Info.FailedMessage = data.error
   } else {
     item.Info.UploadState = 'success'
-    item.Task.uploaded_file_id = data.file_id 
-    item.Task.uploaded_is_rapid = false 
+    item.Task.uploaded_file_id = data.file_id
+    item.Task.uploaded_is_rapid = false
   }
 }
 
@@ -126,26 +126,26 @@ async function checkFileSize(item: IUploadingUI) {
   }
 
   if (item.Task.size != stat.size) {
-    
+
     item.Task.size = stat.size
     item.Info.up_upload_id = ''
   }
   if (item.Task.mtime != stat.mtime.getTime()) {
-    
+
     item.Task.mtime = stat.mtime.getTime()
     item.Info.up_upload_id = ''
   }
 }
 
 async function reloadUploadUrl(uploadinfo: IUploadInfo, item: IUploadingUI) {
-  
+
   uploadinfo.part_info_list = []
-  
+
   await AliUpload.UploadFilePartUrl(item.Task.user_id, item.Task.drive_id, item.Info.up_file_id, item.Info.up_upload_id, item.Task.size, uploadinfo).catch(() => {})
   if (uploadinfo.part_info_list.length > 0) {
     await AliUpload.UploadFileListUploadedParts(item.Task.user_id, item.Task.drive_id, item.Info.up_file_id, item.Info.up_upload_id, 0, uploadinfo).catch(() => {})
     if (uploadinfo.errormsg) {
-      
+
       item.Info.up_file_id = ''
       item.Info.up_upload_id = ''
       uploadinfo.part_info_list = []
@@ -154,13 +154,13 @@ async function reloadUploadUrl(uploadinfo: IUploadInfo, item: IUploadingUI) {
       let isupload = true
       for (let i = 0, maxi = part_info_list.length; i < maxi; i++) {
         if (isupload && part_info_list[i].isupload == false) {
-          isupload = false 
+          isupload = false
         }
-        if (isupload === false && part_info_list[i].isupload == true) part_info_list[i].isupload = false 
+        if (isupload === false && part_info_list[i].isupload == true) part_info_list[i].isupload = false
       }
     }
   } else {
-    
+
     item.Info.up_file_id = ''
     item.Info.up_upload_id = ''
     uploadinfo.part_info_list = []
@@ -172,48 +172,48 @@ async function checkPreHashAndGetPartlist(uploadinfo: IUploadInfo, item: IUpload
   let prehash = ''
   let check_name_mode = useSettingStore().downUploadWhatExist
   if (item.Task.size >= 1024000) {
-    
+
     prehash = await AliUploadHash.GetFilePreHash(item.Task.LocalFilePath)
     if (prehash.startsWith('error')) {
       item.Info.UploadState = 'error'
       item.Info.FailedCode = 504
       item.Info.FailedMessage = prehash.substring('error'.length)
-      return false 
+      return false
     } else {
       const Matched = await AliUpload.UploadCreatFileWithPreHash(item.Task.user_id, item.Task.drive_id, item.Task.parent_id, item.Task.name, item.Task.size, prehash, check_name_mode)
       if (!Matched.errormsg) {
-        
+
         item.Info.up_upload_id = Matched.upload_id
         item.Info.up_file_id = Matched.file_id
         uploadinfo.part_info_list = Matched.part_info_list
         uploadinfo.errormsg = ''
         uploadinfo.israpid = false
-        return true 
+        return true
       } else if (Matched.errormsg != 'PreHashMatched') {
         item.Info.UploadState = 'error'
         item.Info.FailedCode = 504
         item.Info.FailedMessage = Matched.errormsg
-        return false 
+        return false
       }
     }
   }
 
-  
+
   item.Info.UploadState = 'hashing'
   const proof = await AliUploadHash.GetFileHashProof(prehash, uploadinfo.access_token, item)
-  item.Info.UploadState = 'running' 
+  item.Info.UploadState = 'running'
   if (!item.IsRunning) {
     item.Info.UploadState = '已暂停'
     item.Info.FailedCode = 0
     item.Info.FailedMessage = ''
-    return false 
+    return false
   }
   if (proof.sha1 == 'error') {
-    
+
     item.Info.UploadState = 'error'
     item.Info.FailedCode = 503
     item.Info.FailedMessage = '计算sha1出错' + proof.error
-    return false 
+    return false
   }
 
   const MiaoChuan = await AliUpload.UploadCreatFileWithFolders(item.Task.user_id, item.Task.drive_id, item.Task.parent_id, item.Task.name, item.Task.size, proof.sha1, proof.proof_code, check_name_mode)
@@ -221,21 +221,21 @@ async function checkPreHashAndGetPartlist(uploadinfo: IUploadInfo, item: IUpload
     item.Info.UploadState = 'error'
     item.Info.FailedCode = 504
     item.Info.FailedMessage = MiaoChuan.errormsg
-    return false 
+    return false
   } else if (MiaoChuan.israpid || MiaoChuan.isexist) {
     item.Info.UploadState = 'success'
     item.Task.uploaded_file_id = MiaoChuan.file_id
     item.Task.uploaded_is_rapid = true
     item.Info.up_file_id = ''
     item.Info.up_upload_id = ''
-    return false 
+    return false
   } else {
-    
+
     item.Info.up_upload_id = MiaoChuan.upload_id
     item.Info.up_file_id = MiaoChuan.file_id
     uploadinfo.part_info_list = MiaoChuan.part_info_list
     uploadinfo.errormsg = ''
     uploadinfo.israpid = false
-    return true 
+    return true
   }
 }

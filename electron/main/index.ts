@@ -3,10 +3,10 @@ import { release } from 'os'
 import { AppWindow, creatElectronWindow, createMainWindow, createTray, Referer, ShowError, ShowErrorAndExit, ua } from './window'
 import { SpawnOptions } from 'child_process'
 import { portIsOccupied } from './utils'
-const { app, BrowserWindow, dialog, Menu, MenuItem, ipcMain, shell, session } = require('electron')
-const { exec, spawn } = require('child_process')
-const { existsSync, readFileSync, writeFileSync } = require('fs')
-const path = require('path')
+import { app, BrowserWindow, dialog, Menu, MenuItem, ipcMain, shell, session } from 'electron'
+import { exec, spawn } from 'child_process'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
+import path from 'path'
 
 
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()

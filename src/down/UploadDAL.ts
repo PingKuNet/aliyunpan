@@ -7,8 +7,8 @@ import message from '../utils/message'
 import { ArrayToMap, hashCode } from '../utils/utils'
 import useUploadedStore from './UploadedStore'
 import useUploadingStore, { IUploadingModel } from './UploadingStore'
-const path = window.require('path')
-const fspromises = window.require('fs/promises')
+import path from 'path'
+import fspromises from 'fs/promises'
 
 
 let UploadingFileList: IStateUploadTask[] = []

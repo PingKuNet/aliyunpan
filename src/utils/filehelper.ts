@@ -1,5 +1,5 @@
 import DebugLog from './debuglog'
-const fspromises = window.require('fs/promises')
+import fspromises from 'fs/promises'
 
 
 export async function OpenFileHandle(filepath: string) {

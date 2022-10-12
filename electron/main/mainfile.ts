@@ -1,6 +1,6 @@
-const { app } = require('electron')
-const path = require('path')
-const { existsSync, mkdirSync, writeFileSync, copyFileSync, rmSync } = require('fs')
+import { app } from 'electron'
+import path  from 'path'
+import { existsSync, mkdirSync, writeFileSync, copyFileSync, rmSync } from 'fs'
 const DEBUGGING = !app.isPackaged
 
 let NewCopyed = false
