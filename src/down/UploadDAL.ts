@@ -533,12 +533,14 @@ export default class UploadDAL {
       window.WinMsgToUpload({ cmd: 'UploadCmd', Command: 'delete', IsAll: true, IDList: [] })
       await DBUpload.clearUploadTaskAll()
       UploadingState = {}
+      DBUpload.saveUploadObj('UploadingState', UploadingState)
     } else {
       const uploadingStore = useUploadingStore()
       let keys = Array.from(uploadingStore.ListSelected)
       window.WinMsgToUpload({ cmd: 'UploadCmd', Command: 'delete', IsAll: false, IDList: keys })
       await DBUpload.deleteUploadTaskBatch(keys)
       keys.map((t) => delete UploadingState[t])
+      DBUpload.saveUploadObj('UploadingState', UploadingState)
     }
     await this.aReloadUploading()
     cmdlock = false
