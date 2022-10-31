@@ -328,8 +328,8 @@ export async function AriaAddUrl(file: IStateDownFile): Promise<string> {
         next_marker: '',
         m_user_id: info.user_id,
         m_drive_id: info.drive_id,
-        m_dir_id: info.file_id,
-        m_dir_name: info.name
+        dirID: info.file_id,
+        dirName: info.name
       }
       do {
         const isGet = await AliTrash.ApiFileListOnePageAria('name', 'ASC', dir)

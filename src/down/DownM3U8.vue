@@ -10,7 +10,7 @@ const handleClick = () => {}
     <div class="toppanbtn">
       <a-button type="text" size="small" tabindex="-1" @click="handleClick"><i class="iconfont iconstart" />开始全部</a-button>
       <a-button type="text" size="small" tabindex="-1" @click="handleClick"><i class="iconfont iconpause" />暂停全部</a-button>
-      <a-button type="text" size="small" tabindex="-1" @click="handleClick"><i class="iconfont icondelete" />清除全部</a-button>
+      <a-button type="text" size="small" tabindex="-1" @click="handleClick"><i class="iconfont iconrest" />清除全部</a-button>
     </div>
 
     <div v-if="false" class="toppanbtn">
@@ -22,7 +22,7 @@ const handleClick = () => {}
 
       <a-button type="text" size="small" tabindex="-1" @click="handleClick"><i class="iconfont iconstart" />开始全部</a-button>
       <a-button type="text" size="small" tabindex="-1" @click="handleClick"><i class="iconfont iconpause" />暂停全部</a-button>
-      <a-button type="text" size="small" tabindex="-1" @click="handleClick"><i class="iconfont icondelete" />清除全部</a-button>
+      <a-button type="text" size="small" tabindex="-1" @click="handleClick"><i class="iconfont iconrest" />清除全部</a-button>
     </div>
   </div>
   <div style="height: 9px"></div>

@@ -128,7 +128,7 @@ export default class DownDAL {
    * @param tip
    */
   static aAddDownload(fileList: IAliGetFileModel[], savePath: string, needPanPath: boolean, tip: boolean) {
-    const userID = useUserStore().userID
+    const userID = useUserStore().user_id
     const settingStore = useSettingStore()
 
     if (savePath.endsWith('/')) savePath = savePath.substr(0, savePath.length - 1);
@@ -184,8 +184,8 @@ export default class DownDAL {
           drive_id: file.drive_id,
           name: name,
           size: file.size,
-          sizestr: file.sizestr,
-          isDir: file.isdir,
+          sizestr: file.sizeStr,
+          isDir: file.isDir,
           icon: file.icon,
           sha1: '',
           crc64: crc64,

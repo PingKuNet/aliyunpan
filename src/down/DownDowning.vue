@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAppStore, useKeyboardStore, KeyboardState, useWinStore, useDowningStore } from '../store'
-import { onShowRightMenu, onHideRightMenuScroll, RefreshScroll, RefreshScrollTo, TestCtrl, TestKey, TestKeyboardScroll, TestKeyboardSelect } from '../utils/keyboardhelper'
+import { onShowRightMenu, onHideRightMenuScroll, TestCtrl, TestKey, TestKeyboardScroll, TestKeyboardSelect } from '../utils/keyboardhelper'
 import { Tooltip as AntdTooltip } from 'ant-design-vue'
 import 'ant-design-vue/es/tooltip/style/css'
 
@@ -48,11 +48,11 @@ const handleTop = () => downingStore.mOrderDowning([...downingStore.ListSelected
 
 const handleSearchInput = (value: string) => {
   downingStore.mSearchListData(value)
-  RefreshScrollTo(viewlist.value.$el, 0)
+  // RefreshScrollTo(viewlist.value.$el, 0)
 }
 const handleSearchEnter = (event: any) => {
   event.target.blur()
-  RefreshScroll(viewlist.value.$el)
+  // RefreshScroll(viewlist.value.$el)
 }
 const handleRightClick = (e: { event: MouseEvent; node: any }) => {
   let key = e.node.key

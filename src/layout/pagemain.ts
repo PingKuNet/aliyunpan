@@ -1,16 +1,18 @@
 import ServerHttp from '../aliapi/server'
 import { useAppStore, useFootStore, useSettingStore } from '../store'
 import AppCache from '../utils/appcache'
-import DownDAL from '../down/DownDAL'
-import UploadDAL from '../down/UploadDAL'
+import DownDAL from '../down/downdal'
+import UploadDAL from '../transfer/uploaddal'
 import ShareDAL from '../share/share/ShareDAL'
 
 import UserDAL from '../user/userdal'
 import DebugLog from '../utils/debuglog'
 import PanDAL from '../pan/pandal'
+import UploadingDAL from '../transfer/uploadingdal'
+import { Sleep } from '../utils/format'
 
 export function PageMain() {
-  if (window.WinMsg !== undefined) return
+  if (window.WinMsg) return
   window.WinMsg = WinMsg
   //useSettingStore().WebSetProxy()
   Promise.resolve()
@@ -24,10 +26,11 @@ export function PageMain() {
       })
     })
     .then(async () => {
+      await Sleep(500)
       /*await DownDAL.aReloadDowning().catch((err: any) => {
         DebugLog.mSaveDanger('aReloadDowning', err)
       })*/ //TODO
-      await UploadDAL.aReloadUploading().catch((err: any) => {
+      await UploadingDAL.aReloadUploading().catch((err: any) => {
         DebugLog.mSaveDanger('aReloadUploading', err)
       })
 
@@ -37,12 +40,13 @@ export function PageMain() {
       await UploadDAL.aReloadUploaded().catch((err: any) => {
         DebugLog.mSaveDanger('aReloadUploaded', err)
       })
+      await Sleep(500)
 
       await AppCache.aLoadCacheSize().catch((err: any) => {
-        DebugLog.mSaveDanger('AppCacheDALLDB', err)
+        DebugLog.mSaveDanger('AppCacheDALDB', err)
       })
 
-      setTimeout(timeEvent, 1000)
+      setTimeout(timeEvent, 1000) 
     })
     .catch((err: any) => {
       DebugLog.mSaveDanger('LoadSettingFromDB', err)
@@ -51,11 +55,11 @@ export function PageMain() {
 
 export const WinMsg = function (arg: any) {
   if (arg.cmd == 'MainUploadEvent') {
-    UploadDAL.aUploadEvent(arg.ReportList, arg.ErrorList, arg.SuccessList, arg.RunningKeys, arg.SpeedTotal)
-  } else if (arg.cmd == 'MainUploadDir') {
-    const parentid = arg.parentid as string
-    const Info = arg.Info
-    UploadDAL.UploadLocalDir(Info.user_id, Info.drive_id, parentid, Info.LocalFilePath)
+    if (arg.ReportList.length > 0 && arg.ReportList.length != arg.RunningKeys.length) console.log('RunningKeys', arg)
+    if (arg.StopKeys.length > 0) console.log('StopKeys', arg)
+    UploadingDAL.aUploadingEvent(arg.ReportList, arg.ErrorList, arg.SuccessList, arg.RunningKeys, arg.StopKeys, arg.LoadingKeys, arg.SpeedTotal)
+  } else if (arg.cmd == 'MainUploadAppendFiles') {
+    UploadingDAL.aUploadingAppendFiles(arg.TaskID, arg.UploadID, arg.CreatedDirID, arg.AppendList)
   } else if (arg.cmd == 'MainSaveAllDir') {
     PanDAL.aReLoadDriveSave(arg.OneDriver, arg.ErrorMessage)
   } else if (arg.cmd == 'MainShowAllDirProgress') {
@@ -79,14 +83,14 @@ let chkTaskTime = 0
 function timeEvent() {
   const settingStore = useSettingStore()
 
-  let nowTime = Math.floor(Date.now() / 1000)
+  const nowTime = Math.floor(Date.now() / 1000)
 
-
+  
   if (nowTime - runTime > 60 * 60 * 24) {
     runTime = nowTime
     chkDirSizeTime = 0
   }
-
+  
   if (chkUpgradeTime1 > 0 && nowTime - chkUpgradeTime1 > 360) {
     chkUpgradeTime1 = -1
     ServerHttp.CheckUpgrade(false).catch((err: any) => {
@@ -100,7 +104,7 @@ function timeEvent() {
     })
   }
 
-
+  
   if (settingStore.uiFolderSize == true && lockDirSizeTime == false && nowTime - runTime > 50 && chkDirSizeTime >= 10) {
     lockDirSizeTime = true
     PanDAL.aUpdateDirFileSize()
@@ -113,7 +117,7 @@ function timeEvent() {
       })
   } else chkDirSizeTime++
 
-
+  
   chkClearDownLogTime++
   if (nowTime - runTime > 60 && chkClearDownLogTime >= 540) {
     chkClearDownLogTime = 0
@@ -125,7 +129,7 @@ function timeEvent() {
     })*/ //TODO
   }
 
-
+  
   chkTokenTime++
   if (nowTime - runTime > 10 && chkTokenTime >= 600) {
     chkTokenTime = 0
@@ -134,25 +138,25 @@ function timeEvent() {
     })
   }
 
-
+  
   chkTaskTime++
   if (nowTime - runTime > 6 && chkTaskTime >= 2) {
     chkTaskTime = 0
     useFootStore().aUpdateTask()
   }
 
-
+  
   DownDAL.aSpeedEvent().catch((err: any) => {
     DebugLog.mSaveDanger('aSpeedEvent', err)
   })
 
   // 没有下载和上传时触发自动关闭
   if (settingStore.downAutoShutDown == 2) {
-    if (!DownDAL.QueryIsDowning() && !UploadDAL.QueryIsUploading()) {
-      settingStore.downAutoShutDown = 0
-      useAppStore().appShutDown = true
+    if (DownDAL.QueryIsDowning() == false && UploadingDAL.QueryIsUploading() == false) {
+      settingStore.downAutoShutDown = 0 
+      useAppStore().appShutDown = true 
     }
   }
 
-  setTimeout(timeEvent, 1000)
+  setTimeout(timeEvent, 1000) 
 }

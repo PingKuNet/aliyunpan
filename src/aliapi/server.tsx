@@ -17,9 +17,9 @@ export interface IServerRespData {
 }
 export default class ServerHttp {
   static baseapi = b64decode('aHR0cDovLzEyMS41LjE0NC44NDo1MjgyLw==')
-  static async PostToServer(postdata: any): Promise<IServerRespData> {
-    postdata.appVersion = Config.appVersion
-    const str = JSON.stringify(postdata)
+  static async PostToServer(postData: any): Promise<IServerRespData> {
+    postData.appVersion = Config.appVersion
+    const str = JSON.stringify(postData)
     if (window.postdataFunc) {
       let enstr = ''
       try {
@@ -36,11 +36,11 @@ export default class ServerHttp {
     }
   }
 
-  static async Post(postdata: any, isfirst = true): Promise<IServerRespData> {
+  static async Post(postData: any, isfirst = true): Promise<IServerRespData> {
     const url = ServerHttp.baseapi + 'xby2'
-    //const url = "http://192.168.31.74:2018/" + 'xby2'
+    // const url = "http://192.168.31.74:2018/" + 'xby2'
     return axios
-      .post(url, postdata, {
+      .post(url, postData, {
         responseType: 'arraybuffer',
         timeout: 30000,
         headers: {}
@@ -60,13 +60,14 @@ export default class ServerHttp {
       })
       .then((resp) => {
         if (resp.state == 'error' && resp.msg == '网络错误' && isfirst == true) {
-
+          
           return ServerHttp.Sleep(2000).then(() => {
-            return ServerHttp.Post(postdata, false)
+            return ServerHttp.Post(postData, false) 
           })
         } else return resp
       })
   }
+
   static Sleep(msTime: number) {
     return new Promise((resolve) =>
       setTimeout(
@@ -83,8 +84,8 @@ export default class ServerHttp {
   static configUrl = b64decode('aHR0cHM6Ly9naXRlZS5jb20vUGluZ0t1L2FsaXl1bnBhbi1jb25maWcvcmF3L2RldmVsb3AvY29uZmlnMy5qc29u')
 
   static showVer = false
-
-  static async CheckUpgrade(showUpgred: boolean) {
+  
+  static async CheckUpgrade(showUpgred: boolean): Promise<void> {
     axios
       .get(ServerHttp.configUrl, {
         withCredentials: false,
@@ -113,15 +114,15 @@ export default class ServerHttp {
           const v1 = Config.appVersion.replaceAll('v', '').replaceAll('.', '').trim()
           const v2 = response.data.ExeVer.replaceAll('v', '').replaceAll('.', '').trim()
           const info = response.data.VerInfo as string
-          const verurl = response.data.VerUrl || ''
-          const appnewurl = response.data.AppNewUrl || ''
+          const verUrl = response.data.VerUrl || ''
+          const appNewUrl = response.data.AppNewUrl || ''
 
           const v1Int = parseInt(v1), v2Int = parseInt(v2)
           if (v2Int > v1Int) {
-            if (appnewurl) {
+            if (appNewUrl) {
               message.info('检测到新版本 ' + response.data.ExeVer)
-              let isdown = await this.AutoDownload(B64decode(appnewurl))
-              if (isdown) return
+              const isDownloaed = await this.AutoDownload(B64decode(appNewUrl))
+              if (isDownloaed) return 
             }
 
             if (!ServerHttp.showVer) {
@@ -137,7 +138,7 @@ export default class ServerHttp {
                 alignCenter: true,
                 simple: true,
                 onOk: () => {
-                  if (verurl.length > 0) openExternal(B64decode(verurl))
+                  if (verUrl.length > 0) openExternal(B64decode(verUrl))
                 },
                 onClose: () => {
                   ServerHttp.showVer = false
@@ -157,10 +158,10 @@ export default class ServerHttp {
       })
   }
 
-  static async AutoDownload(appnewurl: string): Promise<boolean> {
+  static async AutoDownload(appNewUrl: string): Promise<boolean> {
     const appnew = getAppNewPath()
     return axios
-      .get(appnewurl, {
+      .get(appNewUrl, {
         withCredentials: false,
         responseType: 'arraybuffer',
         timeout: 60000,

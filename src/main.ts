@@ -5,7 +5,7 @@ import store, { useAppStore, useSettingStore } from './store'
 import '@arco-design/web-vue/dist/arco.css'
 import message from './utils/message'
 import DebugLog from './utils/debuglog'
-import { PageMain } from './layout/PageMain'
+import { PageMain } from './layout/pagemain'
 import { WorkerPage } from './workerpage/workercmd'
 
 window.onerror = function (errorMessage, scriptURI, lineNo, columnNo, error) {
@@ -40,8 +40,8 @@ window.addEventListener('unhandledrejection', function (event) {
     }
     if (!reason) DebugLog.mSaveDanger('unhandledrejection', JSON.stringify(event))
   } catch {}
-  event.stopPropagation()
-  event.preventDefault()
+  event.stopPropagation() 
+  event.preventDefault() 
 })
 
 const app = createApp(App)
@@ -57,8 +57,6 @@ app.config.errorHandler = function (err: any, vm, info) {
   } catch {}
   return true
 }
-
-app.config.performance = true
 app.use(ArcoVue, {})
 app.use(store)
 app.mount('#app')
@@ -77,28 +75,40 @@ window.Electron.ipcRenderer.on('setPort', (_event: any, args: any) => {
   const [port] = _event.ports
   window.MainPort = port
   port.onmessage = (event: any) => {
-    window.WinMsg(event.data)
+    Promise.resolve().then(() => {
+      try {
+        if (window.WinMsg) window.WinMsg(event.data)
+      } catch {}
+    })
   }
 })
 window.Electron.ipcRenderer.on('setUploadPort', (_event: any, args: any) => {
   const [port] = _event.ports
   window.UploadPort = port
   port.onmessage = (event: any) => {
-    window.WinMsg(event.data)
+    Promise.resolve().then(() => {
+      try {
+        if (window.WinMsg) window.WinMsg(event.data)
+      } catch {}
+    })
   }
 })
 window.Electron.ipcRenderer.on('setDownloadPort', (_event: any, args: any) => {
   const [port] = _event.ports
   window.DownloadPort = port
   port.onmessage = (event: any) => {
-    window.WinMsg(event.data)
+    Promise.resolve().then(() => {
+      try {
+        if (window.WinMsg) window.WinMsg(event.data)
+      } catch {}
+    })
   }
 })
 
 window.Electron.ipcRenderer.on('setPage', (_event: any, args: any) => {
-  console.log('setPage')
+  console.log('setPage', args.page, args)
   const appStore = useAppStore()
-  const settingStore = useSettingStore()
+  const settingStore = useSettingStore() 
   if (args.theme && settingStore) appStore.toggleTheme(args.theme)
 
   if (args.page == 'PageMain') {
@@ -122,7 +132,7 @@ window.Electron.ipcRenderer.on('setPage', (_event: any, args: any) => {
 
 window.Electron.ipcRenderer.on('setTheme', (_event: any, args: any) => {
   const appStore = useAppStore()
-  appStore.toggleDark(args.dark)
+  appStore.toggleDark(args.dark) 
 })
 try {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
@@ -131,19 +141,5 @@ try {
 
 
 
-
-
-/*
-setTimeout(() => {
-  let list = document.getElementsByTagName('input')
-  for (let i = 0; i < list.length; i++) {
-    list[i].setAttribute('tabindex', '-1')
-  }
-  let list2 = document.getElementsByTagName('button')
-  for (let i = 0; i < list2.length; i++) {
-    list2[i].setAttribute('tabindex', '-1')
-  }
-}, 2000)
-*/
 
 

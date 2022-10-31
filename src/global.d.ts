@@ -1,6 +1,7 @@
 export {}
 
 declare global {
+  // eslint-disable-next-line no-unused-vars
   interface Window {
     Go: any
     require: any
@@ -30,5 +31,7 @@ declare global {
     WinMsgToMain: any
     IsMainPage: boolean
     WebSetProxy: any
+    speedLimte: number
+    WebSetProgressBar: any
   }
 }

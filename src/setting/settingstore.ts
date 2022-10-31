@@ -5,86 +5,91 @@ import { useAppStore } from '../store'
 import PanDAL from '../pan/pandal'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 
+declare type ProxyType = 'none' | 'http' | 'https' | 'socks4' | 'socks4a' | 'socks5' | 'socks5h'
+
 export interface SettingState {
-
-
+  
+  
   uiTheme: string
-
+  
   uiImageMode: string
-
+  
   uiVideoMode: string
-
+  
   uiVideoPlayer: string
-
+  
   uiVideoPlayerPath: string
-
+  
   uiAutoColorVideo: boolean
-
+  
   uiAutoPlaycursorVideo: boolean
-
+  
   uiShowPanPath: boolean
-
+  
   uiShowPanMedia: boolean
-
+  
   uiExitOnClose: boolean
 
-  /** 窗口大小变化提示音 */
-  uiResizeDdsound: boolean
-
+  
+  
   uiFolderSize: boolean
-
+  
   uiFileOrderDuli: string
-
+  
   uiTimeFolderFormate: string
-
+  
   uiTimeFolderIndex: number
-
+  
   uiShareDays: string
-
+  
   uiSharePassword: string
-
+  
   uiShareFormate: string
-
+  
   uiXBTNumber: number
-
+  
   uiXBTWidth: number
-
+  
   uiFileListOrder: string
-
+  
   uiFileListMode: string
-
+  
   uiFileColorArray: { key: string; title: string }[]
 
-
-
+  
+  
   downSavePath: string
-
+  
   downSavePathDefault: boolean
-
+  
   downSavePathFull: boolean
-
+  
   downSaveBreakWeiGui: boolean
-
+  
   uploadFileMax: number
-
+  
   downFileMax: number
-
+  
   downThreadMax: number
-
+  
+  uploadGlobalSpeed: number
+  
+  uploadGlobalSpeedM: string
+  
   downGlobalSpeed: number
-
+  
   downGlobalSpeedM: string
-
+  
   downAutoShutDown: number
-
+  
   downSaveShowPro: boolean
-
+  
   downSmallFileFirst: boolean
-
+  
   downUploadBreakFile: boolean
-
+  
   downUploadWhatExist: string
-
+  
   downIngoredList: string[]
 
 
@@ -102,39 +107,43 @@ export interface SettingState {
   ariaLoading: boolean
 
   downFinishAudio: boolean
+  
+  downAutoStart: boolean
 
+  
+  
   debugCacheSize: string
-
+  
   debugFileListMax: number
-
+  
   debugFavorListMax: number
-
+  
   debugDowningListMax: number
-
+  
   debugDownedListMax: number
-
+  
   debugFolderSizeCacheHour: number
 
-
-
+  
+  
   yinsiLinkPassword: boolean
-
+  
   yinsiZipPassword: boolean
-
+  
   proxyUseProxy: boolean
-
+  
   proxyType: ProxyType
-
+  
   proxyHost: string
-
+  
   proxyPort: number
-
+  
   proxyUserName: string
-
+  
   proxyPassword: string
 }
 const setting: SettingState = {
-
+  
   uiTheme: 'system',
   uiImageMode: 'fill',
   uiVideoMode: 'mpv',
@@ -145,7 +154,7 @@ const setting: SettingState = {
   uiShowPanPath: true,
   uiShowPanMedia: false,
   uiExitOnClose: false,
-
+  
   uiFolderSize: true,
   uiFileOrderDuli: 'null',
   uiTimeFolderFormate: 'yyyy-MM-dd HH-mm-ss',
@@ -165,7 +174,7 @@ const setting: SettingState = {
     { key: '#4caf50', title: '宝石绿' },
     { key: '#ff9800', title: '金盏黄' }
   ],
-
+  
   downSavePath: '',
   downSavePathDefault: true,
   downSavePathFull: true,
@@ -173,6 +182,8 @@ const setting: SettingState = {
   uploadFileMax: 5,
   downFileMax: 5,
   downThreadMax: 4,
+  uploadGlobalSpeed: 0,
+  uploadGlobalSpeedM: 'MB',
   downGlobalSpeed: 0,
   downGlobalSpeedM: 'MB',
   downAutoShutDown: 0,
@@ -189,16 +200,18 @@ const setting: SettingState = {
   ariaState: 'local',
   ariaLoading: false,
   downFinishAudio: true,
+  downAutoStart: true,
+  
   debugCacheSize: '',
   debugFileListMax: 3000,
   debugFavorListMax: 1000,
   debugDowningListMax: 1000,
   debugDownedListMax: 5000,
   debugFolderSizeCacheHour: 72,
-
+  
   yinsiLinkPassword: false,
   yinsiZipPassword: false,
-  uiResizeDdsound: false,
+  
   proxyUseProxy: false,
   proxyType: 'none',
   proxyHost: '',
@@ -207,7 +220,7 @@ const setting: SettingState = {
   proxyPassword: ''
 }
 function _loadSetting(val: any) {
-
+  
   setting.uiTheme = defaultValue(val.uiTheme, ['system', 'light', 'dark'])
   console.log('_loadSetting', val)
   setting.uiImageMode = defaultValue(val.uiImageMode, ['fill', 'width', 'web'])
@@ -219,8 +232,7 @@ function _loadSetting(val: any) {
   setting.uiShowPanPath = defaultBool(val.uiShowPanPath, true)
   setting.uiShowPanMedia = defaultBool(val.uiShowPanMedia, false)
   setting.uiExitOnClose = defaultBool(val.uiExitOnClose, false)
-  setting.uiResizeDdsound = defaultBool(val.uiResizeDdsound, false)
-
+  
   setting.uiFolderSize = defaultBool(val.uiFolderSize, true)
   setting.uiFileOrderDuli = defaultString(val.uiFileOrderDuli, 'null')
   setting.uiTimeFolderFormate = defaultString(val.uiTimeFolderFormate, 'yyyy-MM-dd HH-mm-ss').replace('mm-dd', 'MM-dd').replace('HH-MM', 'HH-mm')
@@ -235,17 +247,19 @@ function _loadSetting(val: any) {
   setting.uiFileListMode = defaultValue(val.uiFileListMode, ['list', 'image', 'bigimage'])
   if (val.uiFileColorArray && val.uiFileColorArray.length >= 6) setting.uiFileColorArray = val.uiFileColorArray
 
-
+  
   setting.downSavePath = defaultString(val.downSavePath, '')
   setting.downSavePathDefault = defaultBool(val.downSavePathDefault, true)
   setting.downSavePathFull = defaultBool(val.downSavePathFull, true)
   setting.downSaveBreakWeiGui = defaultBool(val.downSaveBreakWeiGui, true)
-  setting.uploadFileMax = defaultValue(val.uploadFileMax, [5, 1, 3, 5, 10, 20, 30, 50, 100])
+  setting.uploadFileMax = defaultValue(val.uploadFileMax, [5, 1, 3, 5, 10, 20, 30, 50])
   setting.downFileMax = defaultValue(val.downFileMax, [5, 1, 3, 5, 10, 20, 30])
   setting.downThreadMax = defaultValue(val.downThreadMax, [4, 1, 2, 4, 8, 16])
+  setting.uploadGlobalSpeed = defaultNumberSub(val.uploadGlobalSpeed, 0, 0, 999)
+  setting.uploadGlobalSpeedM = defaultValue(val.uploadGlobalSpeedM, ['MB', 'KB'])
   setting.downGlobalSpeed = defaultNumberSub(val.downGlobalSpeed, 0, 0, 999)
   setting.downGlobalSpeedM = defaultValue(val.downGlobalSpeedM, ['MB', 'KB'])
-  setting.downAutoShutDown = 0
+  setting.downAutoShutDown = 0 
   setting.downSaveShowPro = defaultBool(val.downSaveShowPro, true)
   setting.downSmallFileFirst = defaultBool(val.downSmallFileFirst, false)
   setting.downUploadBreakFile = defaultBool(val.downUploadBreakFile, false)
@@ -261,16 +275,18 @@ function _loadSetting(val: any) {
   setting.ariaState = defaultValue(val.ariaState, ['local', 'remote'])
   setting.ariaLoading = false
   setting.downFinishAudio = defaultBool(val.downFinishAudio, true)
+  setting.downAutoStart = defaultBool(val.downAutoStart, true)
+  
   setting.debugCacheSize = defaultString(val.debugCacheSize, '')
   setting.debugFileListMax = defaultNumberSub(val.debugFileListMax, 3000, 3000, 10000)
   setting.debugFavorListMax = defaultNumberSub(val.debugFavorListMax, 1000, 100, 3000)
-  setting.debugDowningListMax = 1000
+  setting.debugDowningListMax = 1000 
   setting.debugDownedListMax = defaultNumberSub(val.debugDownedListMax, 5000, 1000, 50000)
   setting.debugFolderSizeCacheHour = defaultValue(val.debugFolderSizeCacheHour, [72, 2, 8, 24, 48, 72])
-
+  
   setting.yinsiLinkPassword = defaultBool(val.yinsiLinkPassword, false)
   setting.yinsiZipPassword = defaultBool(val.yinsiZipPassword, false)
-
+  
   setting.proxyUseProxy = defaultBool(val.proxyUseProxy, false)
   setting.proxyType = defaultValue(val.proxyType, ['none', 'http', 'https', 'socks5', 'socks5h'])
   setting.proxyHost = defaultString(val.proxyHost, '')
@@ -283,17 +299,17 @@ let settingstr = ''
 
 function LoadSetting() {
   try {
-    let settingConfig = getResourcesPath('setting.config')
+    const settingConfig = getResourcesPath('setting.config')
     if (settingConfig && existsSync(settingConfig)) {
       settingstr = readFileSync(settingConfig, 'utf-8')
-      let val = JSON.parse(settingstr)
+      const val = JSON.parse(settingstr)
       _loadSetting(val)
       useAppStore().toggleTheme(setting.uiTheme)
     } else {
       SaveSetting()
     }
   } catch {
-    SaveSetting()
+    SaveSetting() 
   }
   return setting
 }
@@ -330,11 +346,11 @@ function defaultNumberSub(val: any, check: number, min: number, max: number) {
 
 function SaveSetting() {
   try {
-    let savestr = JSON.stringify(setting)
-    if (savestr != settingstr) {
-      let settingConfig = getResourcesPath('setting.config')
-      writeFileSync(settingConfig, savestr, 'utf-8')
-      settingstr = savestr
+    const saveStr = JSON.stringify(setting)
+    if (saveStr != settingstr) {
+      const settingConfig = getResourcesPath('setting.config')
+      writeFileSync(settingConfig, saveStr, 'utf-8')
+      settingstr = saveStr
     }
   } catch (err: any) {
     DebugLog.mSaveDanger('SaveSettingToJson', err)
@@ -355,7 +371,7 @@ const useSettingStore = defineStore('setting', {
       if (Object.hasOwn(partial, 'proxyUseProxy')) {
         this.WebSetProxy()
       }
-      SaveSetting()
+      SaveSetting() 
       window.WinMsgToUpload({ cmd: 'SettingRefresh' })
       window.WinMsgToDownload({ cmd: 'SettingRefresh' })
       useAppStore().toggleTheme(setting.uiTheme)
@@ -364,24 +380,23 @@ const useSettingStore = defineStore('setting', {
         PanDAL.aReLoadOneDirToShow('', 'refresh', false)
       }
     },
-
+    
     updateFileColor(key: string, title: string) {
       if (!key) return
-      let arr = setting.uiFileColorArray.concat()
+      const arr = setting.uiFileColorArray.concat()
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].key == key) arr[i].title = title
       }
       this.$patch({ uiFileColorArray: arr })
-      SaveSetting()
+      SaveSetting() 
     },
     getProxy() {
       if (!this.proxyType || this.proxyType == 'none') return undefined
-      if (this.proxyHost == '') return undefined
-      if (this.proxyPort == 0) return undefined
+      if (!this.proxyHost) return undefined
 
       if (this.proxyType.startsWith('http')) {
-        let auth = this.proxyUserName && this.proxyPassword ? this.proxyUserName + ':' + this.proxyPassword : ''
-        let proxy = this.proxyType + '://' + (auth ? auth + '@' : '') + this.proxyHost + ':' + this.proxyPort
+        const auth = this.proxyUserName && this.proxyPassword ? this.proxyUserName + ':' + this.proxyPassword : ''
+        const proxy = this.proxyType + '://' + (auth ? auth + '@' : '') + this.proxyHost + ':' + this.proxyPort
         return proxy
       }
       return { hostname: this.proxyHost, port: this.proxyPort, protocol: this.proxyType, username: this.proxyUserName, password: this.proxyPassword }
@@ -390,11 +405,11 @@ const useSettingStore = defineStore('setting', {
       let proxy = ''
       if (this.proxyUseProxy) {
         if (this.proxyType && this.proxyType !== 'none' && this.proxyHost && this.proxyPort) {
-          let auth = this.proxyUserName && this.proxyPassword ? this.proxyUserName + ':' + this.proxyPassword : ''
+          const auth = this.proxyUserName && this.proxyPassword ? this.proxyUserName + ':' + this.proxyPassword : ''
           proxy = this.proxyType + '://' + (auth ? auth + '@' : '') + this.proxyHost + ':' + this.proxyPort
         }
       }
-      window.WebSetProxy({ proxyurl: proxy })
+      window.WebSetProxy({ proxyUrl: proxy })
     }
   }
 })

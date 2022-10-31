@@ -35,7 +35,7 @@ const userData = getUserData()
     <div class="settinghead">:收藏夹/回收站/全盘搜索/文件标记 显示限制</div>
     <div class="settingrow">
       <div class="settingrow">
-        <a-input-number :tabindex="-1" :style="{ width: '252px' }" mode="button" :min="100" :max="3000" :step="100" :model-value="settingStore.debugFavorListMax" @update:model-value="cb({ debugFavorListMax: $event })">
+        <a-input-number tabindex="-1" :style="{ width: '252px' }" mode="button" :min="100" :max="3000" :step="100" :model-value="settingStore.debugFavorListMax" @update:model-value="cb({ debugFavorListMax: $event })">
           <template #prefix> 只显示前 </template>
           <template #suffix> 个文件 </template>
         </a-input-number>
@@ -57,7 +57,7 @@ const userData = getUserData()
     <div class="settinghead">:下载完/上传完记录 存储限制</div>
     <div class="settingrow">
       <div class="settingrow">
-        <a-input-number :tabindex="-1" :style="{ width: '252px' }" mode="button" :min="1000" :max="50000" :step="1000" :model-value="settingStore.debugDownedListMax" @update:model-value="cb({ debugDownedListMax: $event })">
+        <a-input-number tabindex="-1" :style="{ width: '252px' }" mode="button" :min="1000" :max="50000" :step="1000" :model-value="settingStore.debugDownedListMax" @update:model-value="cb({ debugDownedListMax: $event })">
           <template #prefix> 保留最后 </template>
           <template #suffix> 条记录 </template>
         </a-input-number>

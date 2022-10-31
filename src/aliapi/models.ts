@@ -16,10 +16,10 @@ export interface IVideoPreviewUrl {
   duration: number
   width: number
   height: number
-  url_FHD: string
-  url_HD: string
-  url_SD: string
-  url_LD: string
+  urlFHD: string
+  urlHD: string
+  urlSD: string
+  urlLD: string
   subtitles: {
     language: string
     url: string
@@ -60,6 +60,7 @@ export interface IUploadCreat {
 export interface IUploadInfo {
   token_type: string
   access_token: string
+  sha1: string
   israpid: boolean
   isexist: boolean
   part_info_list: {
@@ -68,7 +69,6 @@ export interface IUploadInfo {
     part_size: number
     isupload: boolean
   }[]
-  errormsg: string
 }
 
 export interface IAliBatchResult {
@@ -83,11 +83,11 @@ export interface IAliBatchResult {
   reslut: {
     id: string
     file_id?: string
-
+    
     name?: string
     type?: string
     parent_file_id?: string
-
+    
     share_id?: string
     share_pwd?: string
     share_url?: string
@@ -148,7 +148,7 @@ export interface IAliUserDriveDetails {
 export interface IAliUserDriveCapacity {
   type: string 
   size: number
-  sizestr: string
+  sizeStr: string
   expired: string 
   expiredstr: string 
   description: string 
@@ -160,29 +160,29 @@ export interface IStateUploadFile {
   UploadID: string
   Info: {
     user_id: string
-
+    
     localFilePath: string
-
-    parent_id: string
+    
+    parent_file_id: string
     drive_id: string
 
     path: string
-
+    
     name: string
-
+    
     size: number
-    sizestr: string
+    sizeStr: string
     icon: string
     isDir: boolean
-    /** 是否秒传 */
     isMiaoChuan: boolean
-
+    
     sha1: string
-
+    
     crc64: string
   }
-
+  
   Upload: {
+    
     DownState: string
     DownTime: number
     DownSize: number
@@ -194,11 +194,14 @@ export interface IStateUploadFile {
     IsCompleted: boolean
     IsFailed: boolean
     /** 失败的代码 */
-    FailedCode: number
+    failedCode: number
     /** 失败的消息 */
-    FailedMessage: string
+    failedMessage: string
+    
     AutoTry: number
+    
     upload_id: string
+    
     file_id: string
     /** 是否覆盖上传 */
     IsBreakExist: boolean

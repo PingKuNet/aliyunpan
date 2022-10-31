@@ -7,17 +7,16 @@ import OtherFollowingRight from './following/OtherFollowingRight.vue'
 import { useAppStore, useUserStore } from '../store'
 
 import ShareDAL from './share/ShareDAL'
-import FollowingDAL from './following/FollowingDAL'
+import FollowingDAL from './following/followingdal'
 
 const appStore = useAppStore()
 appStore.$subscribe((mutation) => {
-  if (mutation.type == 'patch object' && mutation.payload && mutation.payload.appTabMenu) {
-    //监听和加载 我的分享、我订阅的公众号，公众号推荐数据。用户登录时 还要清空我的分享、我订阅的公众号
-    if (mutation.payload.appTabMenu[1] == 'ShareSiteRight') ShareDAL.aLoadShareSite()
-    if (mutation.payload.appTabMenu[1] == 'MyShareRight') ShareDAL.aReloadMyShare(useUserStore().userID, false)
-    if (mutation.payload.appTabMenu[1] == 'MyFollowingRight') FollowingDAL.aReloadMyFollowing(useUserStore().userID, false)
-    if (mutation.payload.appTabMenu[1] == 'OtherFollowingRight') FollowingDAL.aReloadOtherFollowingList(useUserStore().userID, false)
-  }
+  const appPage = appStore.GetAppTabMenu
+  
+  if (appPage == 'ShareSiteRight') ShareDAL.aLoadShareSite()
+  if (appPage == 'MyShareRight') ShareDAL.aReloadMyShare(useUserStore().user_id, false)
+  if (appPage == 'MyFollowingRight') FollowingDAL.aReloadMyFollowing(useUserStore().user_id, false)
+  if (appPage == 'OtherFollowingRight') FollowingDAL.aReloadOtherFollowingList(useUserStore().user_id, false)
 })
 </script>
 
@@ -25,7 +24,7 @@ appStore.$subscribe((mutation) => {
   <a-layout style="height: 100%">
     <a-layout-sider hide-trigger :width="158" class="xbyleft">
       <div class="headdesc">阿里云盘分享</div>
-      <a-menu :selected-keys="[appStore.GetAppTabMenu]" @update:selected-keys="appStore.toggleTabMenu('share', $event[0])" :style="{ width: '100%' }" class="xbyleftmenu">
+      <a-menu :selected-keys="[appStore.GetAppTabMenu]" :style="{ width: '100%' }" class="xbyleftmenu" @update:selected-keys="appStore.toggleTabMenu('share', $event[0])">
         <a-menu-item key="OtherShareRight">
           <template #icon><i class="iconfont iconfenxiang1" /></template>
           导入过的分享

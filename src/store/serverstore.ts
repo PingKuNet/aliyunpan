@@ -9,23 +9,23 @@ export interface IShareSiteModel {
 
 export interface ServerState {
   
-  ShareSiteList: IShareSiteModel[]
-  HelpUrl: string
+  shareSiteList: IShareSiteModel[]
+  helpUrl: string
 }
 
 const useServerStore = defineStore('serverstore', {
   state: (): ServerState => ({
-    ShareSiteList: [],
-    HelpUrl: 'aHR0cHM6Ly9naXRodWIuY29tL1BpbmdLdU5ldC9hbGl5dW5wYW4='
+    shareSiteList: [],
+    helpUrl: 'aHR0cHM6Ly9naXRodWIuY29tL1BpbmdLdU5ldC9hbGl5dW5wYW4='
   }),
   actions: {
     
-    mSaveShareSiteList(ShareSiteList: IShareSiteModel[]) {
-      this.ShareSiteList = ShareSiteList || []
+    mSaveShareSiteList(shareSiteList: IShareSiteModel[]) {
+      this.shareSiteList = shareSiteList || []
     },
     
     mSaveHelpUrl(url: string) {
-      this.HelpUrl = url || 'aHR0cHM6Ly9naXRodWIuY29tL1BpbmdLdU5ldC9hbGl5dW5wYW4='
+      this.helpUrl = url || 'aHR0cHM6Ly9naXRodWIuY29tL1BpbmdLdU5ldC9hbGl5dW5wYW4='
     }
   }
 })
