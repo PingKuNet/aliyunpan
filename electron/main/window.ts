@@ -288,7 +288,7 @@ export function creatElectronWindow(width: number, height: number, center: boole
       backgroundThrottling: false,
       enableWebSQL: true,
       disableBlinkFeatures: 'OutOfBlinkCors,SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure',
-      preload: getAsarPath('dist/electron/preload/index.js')
+      preload: getAsarPath('dist-electron/preload/index.js')
     }
   })
   win.removeMenu()

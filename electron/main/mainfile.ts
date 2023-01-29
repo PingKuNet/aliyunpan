@@ -68,10 +68,10 @@ export function getResourcesPath(fileName: string) {
 }
 export function getCrxPath() {
   if (DEBUGGING) {
-    const basePath = path.resolve(app.getAppPath(), '..')
+    const basePath = path.resolve(app.getAppPath(), '.')
     return path.join(basePath, 'crx')
   } else {
-    let basePath = path.resolve(app.getAppPath(), '..')
+    let basePath = path.resolve(app.getAppPath(), '.')
     basePath = path.join(basePath, 'crx')
     try {
       if (!existsSync(basePath)) mkdirSync(basePath)
