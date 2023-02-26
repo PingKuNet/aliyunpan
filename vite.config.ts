@@ -33,7 +33,7 @@ export default defineConfig(({ command }) => {
               minify: isBuild,
               outDir: 'dist-electron/main',
               rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.devDependencies : {}),
+                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
           },
@@ -51,7 +51,7 @@ export default defineConfig(({ command }) => {
               minify: isBuild,
               outDir: 'dist-electron/preload',
               rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.devDependencies : {}),
+                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
           },
@@ -70,12 +70,5 @@ export default defineConfig(({ command }) => {
       }
     })(),
     clearScreen: false,
-    test: {
-      deps: {
-        inline: [
-          "vite-plugin-electron-renderer"
-        ]
-      }
-    }
   }
 })

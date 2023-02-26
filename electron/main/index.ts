@@ -121,40 +121,40 @@ ipcMain.on('WebUserToken', (event, data) => {
 app
   .whenReady()
   .then(() => {
-    session.defaultSession.webRequest.onBeforeSendHeaders((details, cb) => {
+    // session.defaultSession.webRequest.onBeforeSendHeaders((details, cb) => {
 
-      const should115Referer = details.url.indexOf('.115.com') > 0
-      const shouldGieeReferer = details.url.indexOf('gitee.com') > 0
-      const shouldAliOrigin = details.url.indexOf('.aliyundrive.com') > 0
+    //   const should115Referer = details.url.indexOf('.115.com') > 0
+    //   const shouldGieeReferer = details.url.indexOf('gitee.com') > 0
+    //   const shouldAliOrigin = details.url.indexOf('.aliyundrive.com') > 0
 
-      const shouldAliReferer = !should115Referer && !shouldGieeReferer && (!details.referrer || details.referrer.trim() === '' || /(\/localhost:)|(^file:\/\/)|(\/127.0.0.1:)/.exec(details.referrer) !== null)
-      const shouldToken = details.url.includes('aliyundrive') && details.url.includes('download')
+    //   const shouldAliReferer = !should115Referer && !shouldGieeReferer && (!details.referrer || details.referrer.trim() === '' || /(\/localhost:)|(^file:\/\/)|(\/127.0.0.1:)/.exec(details.referrer) !== null)
+    //   const shouldToken = details.url.includes('aliyundrive') && details.url.includes('download')
 
-      cb({
-        cancel: false,
-        requestHeaders: {
-          ...details.requestHeaders,
-          ...(should115Referer && {
-            Referer: 'http://115.com/s/swn4bs33z88',
-            Origin: 'http://115.com'
-          }),
-          ...(shouldGieeReferer && {
-            Referer: 'https://gitee.com/'
-          }),
-          ...(shouldAliOrigin && {
-            Origin: 'https://www.aliyundrive.com'
-          }),
-          ...(shouldAliReferer && {
-            Referer: 'https://www.aliyundrive.com/'
-          }),
-          ...(shouldToken && {
-            Authorization: userToken.access_token
-          }),
-          'X-Canary': 'client=web,app=adrive,version=v3.0.0',
-          'Accept-Language': 'zh-CN,zh;q=0.9'
-        }
-      })
-    })
+    //   cb({
+    //     cancel: false,
+    //     requestHeaders: {
+    //       ...details.requestHeaders,
+    //       ...(should115Referer && {
+    //         Referer: 'http://115.com/s/swn4bs33z88',
+    //         Origin: 'http://115.com'
+    //       }),
+    //       ...(shouldGieeReferer && {
+    //         Referer: 'https://gitee.com/'
+    //       }),
+    //       ...(shouldAliOrigin && {
+    //         Origin: 'https://www.aliyundrive.com'
+    //       }),
+    //       ...(shouldAliReferer && {
+    //         Referer: 'https://www.aliyundrive.com/'
+    //       }),
+    //       ...(shouldToken && {
+    //         Authorization: userToken.access_token
+    //       }),
+    //       'X-Canary': 'client=web,app=adrive,version=v3.0.0',
+    //       'Accept-Language': 'zh-CN,zh;q=0.9'
+    //     }
+    //   })
+    // })
 
     session.defaultSession.loadExtension(getCrxPath(), { allowFileAccess: true }).then((le) => {
       createMenu()
