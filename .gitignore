@@ -12,3 +12,5 @@ release
 aria2.conf
 aria2c.exe
 
+package-lock.json
+yarn.lock

@@ -60,7 +60,7 @@ export function createMainWindow() {
       AppWindow.winHeight = 600
     }
   }
-  AppWindow.mainWindow = creatElectronWindow(AppWindow.winWidth, AppWindow.winHeight, true, 'main', AppWindow.winTheme)
+  AppWindow.mainWindow = creatElectronWindow(AppWindow.winWidth, AppWindow.winHeight, true, 'index', AppWindow.winTheme)
 
   AppWindow.mainWindow.on('resize', () => {
     debounceResize(function () {
@@ -288,10 +288,10 @@ export function creatElectronWindow(width: number, height: number, center: boole
       backgroundThrottling: false,
       enableWebSQL: true,
       disableBlinkFeatures: 'OutOfBlinkCors,SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure',
-      preload: getAsarPath('dist/electron/preload/index.js')
+      preload: getAsarPath('dist-electron/preload/index.js')
     }
   })
-  win.removeMenu()
+  // win.removeMenu()
   if (DEBUGGING) {
     const url = `http://localhost:${process.env.VITE_DEV_SERVER_PORT}`
     win.loadURL(url, { userAgent: ua, httpReferrer: Referer })
@@ -314,7 +314,7 @@ export function creatElectronWindow(width: number, height: number, center: boole
 
   win.webContents.on('did-create-window', (childWindow) => {
     if (process.platform === 'win32') {
-      childWindow.setMenu(null) 
+      // childWindow.setMenu(null) 
     }
   })
   return win

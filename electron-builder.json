@@ -1,10 +1,11 @@
-{
+ {
   "appId": "YouAppID",
   "asar": true,
   "directories": {
     "output": "release"
   },
   "files": [
+    "dist-electron",
     "dist"
   ],
   "mac": {

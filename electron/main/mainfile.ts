@@ -1,5 +1,5 @@
 import { app } from 'electron'
-import path  from 'path'
+import path from 'path'
 import { existsSync, mkdirSync, writeFileSync, copyFileSync, rmSync } from 'fs'
 const DEBUGGING = !app.isPackaged
 
@@ -50,7 +50,7 @@ export function getResourcesPath(fileName: string) {
           const bufferData = Buffer.from(appicon, 'base64')
           writeFileSync(png, bufferData)
         }
-      } catch {}
+      } catch { }
     }
 
     if (fileName == 'app.png') {
@@ -60,7 +60,7 @@ export function getResourcesPath(fileName: string) {
           const bufferData = Buffer.from(apppng, 'base64')
           writeFileSync(png, bufferData)
         }
-      } catch {}
+      } catch { }
     }
 
     return path.join(basePath, fileName)
@@ -68,26 +68,26 @@ export function getResourcesPath(fileName: string) {
 }
 export function getCrxPath() {
   if (DEBUGGING) {
-    const basePath = path.resolve(app.getAppPath(), '..')
+    const basePath = path.resolve(app.getAppPath(), '.')
     return path.join(basePath, 'crx')
   } else {
     let basePath = path.resolve(app.getAppPath(), '..')
-    basePath = path.join(basePath, 'crx')
     try {
+      basePath = path.join(basePath, 'crx')
       if (!existsSync(basePath)) mkdirSync(basePath)
-    } catch {}
+    } catch { }
     try {
       const manifest = path.join(basePath, 'manifest.json')
       if (!existsSync(manifest)) writeFileSync(manifest, crxmanifest, 'utf-8')
-    } catch {}
+    } catch { }
     try {
       const devtoolshtml = path.join(basePath, 'devtools.html')
       if (!existsSync(devtoolshtml)) writeFileSync(devtoolshtml, crxdevtoolshtml, 'utf-8')
-    } catch {}
+    } catch { }
     try {
       const devtoolsjs = path.join(basePath, 'devtools.js')
       if (!existsSync(devtoolsjs)) writeFileSync(devtoolsjs, crxdevtoolsjs, 'utf-8')
-    } catch {}
+    } catch { }
 
     return basePath
   }
@@ -100,7 +100,7 @@ export function getUserDataPath(fileName: string) {
 export function mkAriaConf(filePath: string) {
   try {
     if (!existsSync(filePath)) writeFileSync(filePath, ariaconf, 'utf-8')
-  } catch {}
+  } catch { }
 }
 
 const appicon =

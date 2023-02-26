@@ -44,7 +44,7 @@ try {
     const configData = readFileSync(userData, 'utf-8')
     if (configData) app.setPath('userData', configData)
   }
-} catch {}
+} catch { }
 
 const gotTheLock = app.requestSingleInstanceLock()
 if (DEBUGGING == false) {
@@ -121,40 +121,40 @@ ipcMain.on('WebUserToken', (event, data) => {
 app
   .whenReady()
   .then(() => {
-    session.defaultSession.webRequest.onBeforeSendHeaders((details, cb) => {
+    // session.defaultSession.webRequest.onBeforeSendHeaders((details, cb) => {
 
-      const should115Referer = details.url.indexOf('.115.com') > 0
-      const shouldGieeReferer = details.url.indexOf('gitee.com') > 0
-      const shouldAliOrigin = details.url.indexOf('.aliyundrive.com') > 0
+    //   const should115Referer = details.url.indexOf('.115.com') > 0
+    //   const shouldGieeReferer = details.url.indexOf('gitee.com') > 0
+    //   const shouldAliOrigin = details.url.indexOf('.aliyundrive.com') > 0
 
-      const shouldAliReferer = !should115Referer && !shouldGieeReferer && (!details.referrer || details.referrer.trim() === '' || /(\/localhost:)|(^file:\/\/)|(\/127.0.0.1:)/.exec(details.referrer) !== null)
-      const shouldToken = details.url.includes('aliyundrive') && details.url.includes('download')
+    //   const shouldAliReferer = !should115Referer && !shouldGieeReferer && (!details.referrer || details.referrer.trim() === '' || /(\/localhost:)|(^file:\/\/)|(\/127.0.0.1:)/.exec(details.referrer) !== null)
+    //   const shouldToken = details.url.includes('aliyundrive') && details.url.includes('download')
 
-      cb({
-        cancel: false,
-        requestHeaders: {
-          ...details.requestHeaders,
-          ...(should115Referer && {
-            Referer: 'http://115.com/s/swn4bs33z88',
-            Origin: 'http://115.com'
-          }),
-          ...(shouldGieeReferer && {
-            Referer: 'https://gitee.com/'
-          }),
-          ...(shouldAliOrigin && {
-            Origin: 'https://www.aliyundrive.com'
-          }),
-          ...(shouldAliReferer && {
-            Referer: 'https://www.aliyundrive.com/'
-          }),
-          ...(shouldToken && {
-            Authorization: userToken.access_token
-          }),
-          'X-Canary': 'client=web,app=adrive,version=v3.0.0',
-          'Accept-Language': 'zh-CN,zh;q=0.9'
-        }
-      })
-    })
+    //   cb({
+    //     cancel: false,
+    //     requestHeaders: {
+    //       ...details.requestHeaders,
+    //       ...(should115Referer && {
+    //         Referer: 'http://115.com/s/swn4bs33z88',
+    //         Origin: 'http://115.com'
+    //       }),
+    //       ...(shouldGieeReferer && {
+    //         Referer: 'https://gitee.com/'
+    //       }),
+    //       ...(shouldAliOrigin && {
+    //         Origin: 'https://www.aliyundrive.com'
+    //       }),
+    //       ...(shouldAliReferer && {
+    //         Referer: 'https://www.aliyundrive.com/'
+    //       }),
+    //       ...(shouldToken && {
+    //         Authorization: userToken.access_token
+    //       }),
+    //       'X-Canary': 'client=web,app=adrive,version=v3.0.0',
+    //       'Accept-Language': 'zh-CN,zh;q=0.9'
+    //     }
+    //   })
+    // })
 
     session.defaultSession.loadExtension(getCrxPath(), { allowFileAccess: true }).then((le) => {
       createMenu()
@@ -195,7 +195,7 @@ ipcMain.on('WebToElectron', (event, data) => {
     }
     try {
       app.exit()
-    } catch {}
+    } catch { }
   } else if (data.cmd && data.cmd === 'minsize') {
     if (mainWindow && !mainWindow.isDestroyed()) mainWindow.minimize()
   } else if (data.cmd && data.cmd === 'maxsize') {
@@ -314,7 +314,7 @@ ipcMain.on('WebExecSync', (event, data) => {
     if (data.command === 'mpv') {
       const basePath = path.resolve(app.getAppPath(), '..')
       if (process.platform === 'win32') {
-        const exe = path.join(basePath, 'MPV', 'mpv.exe')
+        const exe = findExecutable('mpv')
         if (existsSync(exe) == false) {
           event.returnValue = { error: '找不到文件' + data.command + ' ' + exe }
           ShowError('找不到文件', data.command + ' ' + exe)
@@ -353,7 +353,7 @@ ipcMain.on('WebSaveTheme', (event, data) => {
   try {
     const themeJson = getUserDataPath('theme.json')
     writeFileSync(themeJson, `{"theme":"${data.theme || ''}"}`, 'utf-8')
-  } catch {}
+  } catch { }
 })
 
 ipcMain.on('WebClearCookies', (event, data) => {
@@ -388,7 +388,7 @@ ipcMain.on('WebRelaunch', (event, data) => {
   app.relaunch()
   try {
     app.exit()
-  } catch {}
+  } catch { }
 })
 
 ipcMain.handle('WebRelaunchAria', async (event, data) => {
@@ -411,7 +411,7 @@ ipcMain.on('WebShutDown', (event, data) => {
       if (data.quitApp) {
         try {
           app.exit()
-        } catch {}
+        } catch { }
       }
       if (err) {
         // donothing
@@ -438,7 +438,7 @@ ipcMain.on('WebShutDown', (event, data) => {
       if (data.quitApp) {
         try {
           app.exit()
-        } catch {}
+        } catch { }
       }
       if (err) {
         // donothing
@@ -504,6 +504,32 @@ ipcMain.on('WebOpenUrl', (event, data) => {
   })
 })
 
+function findExecutable(exe: string): string | null {
+  exe = exe.replace('.exe', '');
+  const envPath = process.env.Path || process.env.PATH || "";
+  const envExt = process.env.PATHEXT || "";
+  const pathDirs = envPath
+    .replace(/["]+/g, "")
+    .split(path.delimiter)
+    .filter(Boolean);
+  const extensions = envExt.split(";");
+  const candidates = pathDirs.flatMap((d) =>
+    extensions.map((ext) => path.join(d, exe + ext))
+  );
+  let arr = candidates.map(c => {
+    if (existsSync(c)) {
+      return c
+    } else {
+      return null;
+    }
+  }).filter(c => c != null);
+  if (arr[0] != null) {
+    return arr[0]
+  } else {
+    return null
+  }
+}
+
 async function creatAria() {
   try {
     let basePath = path.resolve(app.getAppPath(), '..')
@@ -519,6 +545,9 @@ async function creatAria() {
     }
     let ariaPath2 = path.join(basePath, ariaPath)
     if (!existsSync(ariaPath2)) {
+      ariaPath2 = findExecutable(ariaPath);
+    }
+    if (!existsSync(ariaPath2)) {
       ShowError('找不到Aria程序文件', ariaPath2)
       return 0
     }
@@ -527,7 +556,7 @@ async function creatAria() {
     if (!existsSync(confPath)) mkAriaConf(confPath)
 
     process.chdir(basePath)
-    const options:SpawnOptions = { detached: true, stdio: 'ignore', cwd: basePath }
+    const options: SpawnOptions = { detached: true, stdio: 'ignore', cwd: basePath }
     const port = await portIsOccupied(16800)
     const subprocess = spawn(
       ariaPath,
