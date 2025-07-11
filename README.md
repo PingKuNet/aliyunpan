@@ -6,6 +6,14 @@
 
 基于阿里云盘网页版开发的PC客户端，支持win7-11，macOS，linux
 
+本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助
+
+官网链接：[亚洲最佳CDN、边缘和安全解决方案 - Tencent EdgeOne](https://edgeone.ai/zh?from=github)
+
+![image](https://edgeone.ai/media/34fe3a45-492d-4ea4-ae5d-ea1087ca7b4b.png)
+
+<br/>
+
 > **08.25：[v3开发人员测试版](https://github.com/PingKuNet/aliyunpan/releases/tag/v3.8.25.alpha)，追加上传，优化打包**
 
 > **04.14：[v2.12.14版已发布](https://github.com/liupan1890/aliyunpan/issues/639)，适配官网升级**
