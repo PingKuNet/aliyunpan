@@ -4,6 +4,7 @@ dist*
 *.local
 .debug.env
 
+## 缓存相关 ##
 tmp
 **/.tmp
 release
